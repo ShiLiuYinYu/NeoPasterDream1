@@ -3,6 +3,8 @@ package com.pasterdream.pasterdreammod;
 import com.pasterdream.pasterdreammod.capability.MeltDreamEnergyCapability;
 import com.pasterdream.pasterdreammod.capability.SanCapability;
 import com.pasterdream.pasterdreammod.command.PDCommands;
+import com.pasterdream.pasterdreammod.config.PDClientConfig;
+import com.pasterdream.pasterdreammod.config.PDCommonConfig;
 import com.pasterdream.pasterdreammod.registry.PDBlockEntities;
 import com.pasterdream.pasterdreammod.registry.PDBlocks;
 import com.pasterdream.pasterdreammod.registry.PDCreativeTabs;
@@ -17,6 +19,7 @@ import com.pasterdream.pasterdreammod.worldgen.PDBiomeModifiers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -85,6 +88,10 @@ public class PasterDreamMod {
         // 初始化 San 理智值系统（注册 AttachmentType + 事件监听器）
         SanCapability.init(modEventBus);
 
+        // 注册配置文件
+        modContainer.registerConfig(ModConfig.Type.CLIENT, PDClientConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, PDCommonConfig.SPEC);
+
         // 监听通用设置事件
         modEventBus.addListener(this::commonSetup);
 
@@ -98,7 +105,23 @@ public class PasterDreamMod {
      * @param event FML 通用设置事件
      */
     private void commonSetup(final FMLCommonSetupEvent event) {
-        // 初始化逻辑放在这里
-        LOGGER.info("PasterDreamMod 通用设置阶段初始化完成");
+        LOGGER.info("===== PasterDreamMod 地形生成系统初始化 =====");
+        LOGGER.info("BiomeModifier 序列化器已注册: pasterdream:dyedream_features");
+
+        // 输出预期的 BiomeModifier JSON 配置文件列表（用于测试时确认文件是否被正确加载）
+        LOGGER.info("预期的 BiomeModifier JSON 文件列表:");
+        LOGGER.info("  - neoforge/biome_modifier/dyedream_ores.json -> 注入矿石 (UNDERGROUND_ORES)");
+        LOGGER.info("    ├ pasterdream:ore_amber_candy");
+        LOGGER.info("    ├ pasterdream:ore_dyedreamdust");
+        LOGGER.info("    └ pasterdream:ore_dyedreamquartz");
+        LOGGER.info("  - neoforge/biome_modifier/dyedream_vegetation.json -> 注入树木与植被 (VEGETAL_DECORATION)");
+        LOGGER.info("    ├ pasterdream:dyedream_trees");
+        LOGGER.info("    ├ pasterdream:patch_dyedream_buds");
+        LOGGER.info("    ├ pasterdream:patch_pinkagaric");
+        LOGGER.info("    ├ pasterdream:patch_dyedream_lily_pad");
+        LOGGER.info("    ├ pasterdream:patch_dyedream_lotus");
+        LOGGER.info("    └ pasterdream:patch_dyedream_seagrass");
+        LOGGER.info("目标生物群系标签: #pasterdream:is_dyedream");
+        LOGGER.info("===== 地形生成系统初始化完成 =====");
     }
 }

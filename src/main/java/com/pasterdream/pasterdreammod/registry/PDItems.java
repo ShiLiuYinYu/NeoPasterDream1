@@ -502,4 +502,43 @@ public class PDItems {
     public static final DeferredItem<BlockItem> DYEDREAM_SEAGRASS = ITEMS.registerSimpleBlockItem("dyedream_seagrass", PDBlocks.DYEDREAM_SEAGRASS);
     public static final DeferredItem<BlockItem> DYEDREAM_SAPLING = ITEMS.registerSimpleBlockItem("dyedream_sapling", PDBlocks.DYEDREAM_SAPLING);
     public static final DeferredItem<BlockItem> DYEDREAM_CRACK = ITEMS.registerSimpleBlockItem("dyedream_crack", PDBlocks.DYEDREAM_CRACK);
+
+    // ==================== 云朵方块 BlockItem ====================
+    public static final DeferredItem<BlockItem> CLOUD = ITEMS.registerSimpleBlockItem("cloud", PDBlocks.CLOUD);
+    public static final DeferredItem<BlockItem> DARK_CLOUD = ITEMS.registerSimpleBlockItem("dark_cloud", PDBlocks.DARK_CLOUD);
+    public static final DeferredItem<BlockItem> THICK_CLOUD = ITEMS.registerSimpleBlockItem("thick_cloud", PDBlocks.THICK_CLOUD);
+
+    // ==================== 染梦花草 BlockItem ====================
+    public static final DeferredItem<BlockItem> FLOWER_1 = ITEMS.registerSimpleBlockItem("flower_1", PDBlocks.FLOWER_1);
+    public static final DeferredItem<BlockItem> FLOWER_2 = ITEMS.registerSimpleBlockItem("flower_2", PDBlocks.FLOWER_2);
+    public static final DeferredItem<BlockItem> FLOWER_3 = ITEMS.registerSimpleBlockItem("flower_3", PDBlocks.FLOWER_3);
+    public static final DeferredItem<BlockItem> FLOWER_5 = ITEMS.registerSimpleBlockItem("flower_5", PDBlocks.FLOWER_5);
+    public static final DeferredItem<BlockItem> FLOWER_6 = ITEMS.registerSimpleBlockItem("flower_6", PDBlocks.FLOWER_6);
+    public static final DeferredItem<BlockItem> FLOWER_7 = ITEMS.registerSimpleBlockItem("flower_7", PDBlocks.FLOWER_7);
+    public static final DeferredItem<BlockItem> FLOWER_8 = ITEMS.registerSimpleBlockItem("flower_8", PDBlocks.FLOWER_8);
+    public static final DeferredItem<BlockItem> FLOWER_9 = ITEMS.registerSimpleBlockItem("flower_9", PDBlocks.FLOWER_9);
+    public static final DeferredItem<BlockItem> FLOWER_10 = ITEMS.registerSimpleBlockItem("flower_10", PDBlocks.FLOWER_10);
+    public static final DeferredItem<BlockItem> FLOWER_11 = ITEMS.registerSimpleBlockItem("flower_11", PDBlocks.FLOWER_11);
+    public static final DeferredItem<BlockItem> FLOWER_12 = ITEMS.registerSimpleBlockItem("flower_12", PDBlocks.FLOWER_12);
+    public static final DeferredItem<BlockItem> FLOWER_13 = ITEMS.registerSimpleBlockItem("flower_13", PDBlocks.FLOWER_13);
+    public static final DeferredItem<BlockItem> FLOWER_14 = ITEMS.registerSimpleBlockItem("flower_14", PDBlocks.FLOWER_14);
+    public static final DeferredItem<BlockItem> FLOWER_15 = ITEMS.registerSimpleBlockItem("flower_15", PDBlocks.FLOWER_15);
+    public static final DeferredItem<BlockItem> FLOWER_16 = ITEMS.registerSimpleBlockItem("flower_16", PDBlocks.FLOWER_16);
+    public static final DeferredItem<BlockItem> FLOWER_17 = ITEMS.registerSimpleBlockItem("flower_17", PDBlocks.FLOWER_17);
+    public static final DeferredItem<BlockItem> FLOWER_18 = ITEMS.registerSimpleBlockItem("flower_18", PDBlocks.FLOWER_18);
+    public static final DeferredItem<BlockItem> GRASS_1 = ITEMS.registerSimpleBlockItem("grass_1", PDBlocks.GRASS_1);
+    public static final DeferredItem<BlockItem> GRASS_2 = ITEMS.registerSimpleBlockItem("grass_2", PDBlocks.GRASS_2);
+    public static final DeferredItem<BlockItem> GRASS_3 = ITEMS.registerSimpleBlockItem("grass_3", PDBlocks.GRASS_3);
+    public static final DeferredItem<BlockItem> GRASS_4 = ITEMS.registerSimpleBlockItem("grass_4", PDBlocks.GRASS_4);
+    public static final DeferredItem<BlockItem> GRASS_5 = ITEMS.registerSimpleBlockItem("grass_5", PDBlocks.GRASS_5);
+    public static final DeferredItem<BlockItem> GRASS_6 = ITEMS.registerSimpleBlockItem("grass_6", PDBlocks.GRASS_6);
+    public static final DeferredItem<BlockItem> GRASS_7 = ITEMS.registerSimpleBlockItem("grass_7", PDBlocks.GRASS_7);
+    public static final DeferredItem<BlockItem> GRASS_8 = ITEMS.registerSimpleBlockItem("grass_8", PDBlocks.GRASS_8);
+    public static final DeferredItem<BlockItem> GRASS_9 = ITEMS.registerSimpleBlockItem("grass_9", PDBlocks.GRASS_9);
+    public static final DeferredItem<BlockItem> GRASS_10 = ITEMS.registerSimpleBlockItem("grass_10", PDBlocks.GRASS_10);
+    public static final DeferredItem<BlockItem> GRASS_11 = ITEMS.registerSimpleBlockItem("grass_11", PDBlocks.GRASS_11);
+    public static final DeferredItem<BlockItem> GRASS_12 = ITEMS.registerSimpleBlockItem("grass_12", PDBlocks.GRASS_12);
+    public static final DeferredItem<BlockItem> GRASS_13 = ITEMS.registerSimpleBlockItem("grass_13", PDBlocks.GRASS_13);
+    public static final DeferredItem<BlockItem> GRASS_14 = ITEMS.registerSimpleBlockItem("grass_14", PDBlocks.GRASS_14);
+    public static final DeferredItem<BlockItem> GRASS_15 = ITEMS.registerSimpleBlockItem("grass_15", PDBlocks.GRASS_15);
 }

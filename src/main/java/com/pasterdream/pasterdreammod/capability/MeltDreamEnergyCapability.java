@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pasterdream.pasterdreammod.PasterDreamMod;
+import com.pasterdream.pasterdreammod.config.PDCommonConfig;
 import com.pasterdream.pasterdreammod.network.ChannelEventTracker;
 import com.pasterdream.pasterdreammod.network.MeltDreamEnergyDataPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -84,6 +85,7 @@ public class MeltDreamEnergyCapability {
      */
     public static void setEnergy(Player player, double value) {
         if (player instanceof ServerPlayer sp) {
+            if (!PDCommonConfig.ENABLE_MELTDREAM_ENERGY.get()) return;
             MeltDreamEnergyData data = sp.getData(MELT_DREAM_ENERGY);
             data.setEnergy(value);
             sp.setData(MELT_DREAM_ENERGY, data);
@@ -115,6 +117,7 @@ public class MeltDreamEnergyCapability {
      */
     public static boolean consumeEnergy(Player player, double value) {
         if (player instanceof ServerPlayer sp) {
+            if (!PDCommonConfig.ENABLE_MELTDREAM_ENERGY.get()) return false;
             MeltDreamEnergyData data = sp.getData(MELT_DREAM_ENERGY);
             if (data.isNoNeedConsumeActive() || sp.isCreative()) {
                 return true;
@@ -149,6 +152,7 @@ public class MeltDreamEnergyCapability {
      */
     public static void setNoNeedConsume(Player player, boolean flag) {
         if (player instanceof ServerPlayer sp) {
+            if (!PDCommonConfig.ENABLE_MELTDREAM_ENERGY.get()) return;
             MeltDreamEnergyData data = sp.getData(MELT_DREAM_ENERGY);
             data.setNoNeedConsume(flag);
             sp.setData(MELT_DREAM_ENERGY, data);

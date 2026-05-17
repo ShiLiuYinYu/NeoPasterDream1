@@ -1,5 +1,6 @@
 package com.pasterdream.pasterdreammod.block;
 
+import com.pasterdream.pasterdreammod.registry.PDBlocks;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 /**
@@ -30,5 +30,13 @@ public class DyedreamSaplingBlock extends FlowerBlock {
                 .noCollission()
                 .offsetType(BlockBehaviour.OffsetType.NONE)
                 .pushReaction(PushReaction.DESTROY));
+    }
+
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.is(PDBlocks.DYEDREAM_GRASS.get())
+            || state.is(PDBlocks.DYEDREAM_DIRT.get())
+            || state.is(PDBlocks.DYEDREAM_SAND.get())
+            || state.is(PDBlocks.DYEDREAM_BLOCK.get());
     }
 }

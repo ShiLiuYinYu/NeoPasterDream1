@@ -3,6 +3,7 @@ package com.pasterdream.pasterdreammod.capability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pasterdream.pasterdreammod.PasterDreamMod;
+import com.pasterdream.pasterdreammod.config.PDCommonConfig;
 import com.pasterdream.pasterdreammod.network.ChannelEventTracker;
 import com.pasterdream.pasterdreammod.network.SanDataPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -124,6 +125,7 @@ public class SanCapability {
      */
     public static void setSanCheck(Player player, boolean flag) {
         if (player instanceof ServerPlayer sp) {
+            if (!PDCommonConfig.ENABLE_SAN.get()) return;
             SanData data = sp.getData(SAN_ATTACHMENT);
             data.setSanCheck(flag);
             sp.setData(SAN_ATTACHMENT, data);

@@ -9,11 +9,18 @@ import com.pasterdream.pasterdreammod.block.DyedreamLotusBlock;
 import com.pasterdream.pasterdreammod.block.DyedreamPlanksPaneBlock;
 import com.pasterdream.pasterdreammod.block.DyedreamSaplingBlock;
 import com.pasterdream.pasterdreammod.block.DyedreamSeagrassBlock;
+import com.pasterdream.pasterdreammod.block.CloudBlock;
+import com.pasterdream.pasterdreammod.block.DarkCloudBlock;
 import com.pasterdream.pasterdreammod.block.DyedreamBudBlock;
+import com.pasterdream.pasterdreammod.block.DyedreamDoublePlantBlock;
+import com.pasterdream.pasterdreammod.block.DyedreamFlowerBlock;
+import com.pasterdream.pasterdreammod.block.DyedreamLeavesBlock;
 import com.pasterdream.pasterdreammod.block.IceBudBlock;
 import com.pasterdream.pasterdreammod.block.LifeCrystalBlock;
 import com.pasterdream.pasterdreammod.block.PinkagaricBlock;
 import com.pasterdream.pasterdreammod.block.ShadowChestBlock;
+import com.pasterdream.pasterdreammod.block.ThickCloudBlock;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
                 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -112,8 +119,8 @@ public class PDBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.SLIME_BLOCK));
     public static final DeferredBlock<Block> ICESTONE = BLOCKS.registerSimpleBlock("icestone",
             BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final DeferredBlock<Block> DYEDREAM_LEAVES = BLOCKS.registerSimpleBlock("dyedream_leaves",
-            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES));
+    public static final DeferredBlock<DyedreamLeavesBlock> DYEDREAM_LEAVES = BLOCKS.registerBlock("dyedream_leaves",
+            DyedreamLeavesBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES));
     public static final DeferredBlock<Block> DYEDREAM_WORLDTREE_LEAVES = BLOCKS.registerSimpleBlock("dyedream_worldtree_leaves",
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES));
     public static final DeferredBlock<Block> DYEDREAMQUARTZ_ORE = BLOCKS.registerSimpleBlock("dyedreamquartz_ore",
@@ -288,5 +295,92 @@ public class PDBlocks {
      */
     public static final DeferredBlock<DyedreamCrackBlock> DYEDREAM_CRACK = BLOCKS.registerBlock("dyedream_crack",
             p -> new DyedreamCrackBlock());
+
+    // ==================== 云朵方块 ====================
+    public static final DeferredBlock<CloudBlock> CLOUD = BLOCKS.registerBlock("cloud", p -> new CloudBlock());
+    public static final DeferredBlock<DarkCloudBlock> DARK_CLOUD = BLOCKS.registerBlock("dark_cloud", p -> new DarkCloudBlock());
+    public static final DeferredBlock<ThickCloudBlock> THICK_CLOUD = BLOCKS.registerBlock("thick_cloud", p -> new ThickCloudBlock());
+
+    // ==================== 染梦花草（移植自原版模组） ====================
+
+    private static BlockBehaviour.Properties flowerProps() {
+        return BlockBehaviour.Properties.ofFullCopy(Blocks.DANDELION);
+    }
+
+    private static BlockBehaviour.Properties doublePlantProps() {
+        return BlockBehaviour.Properties.ofFullCopy(Blocks.SUNFLOWER);
+    }
+
+    // ========== 单格花（DyedreamFlowerBlock） ==========
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_1 = BLOCKS.registerBlock("flower_1",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_2 = BLOCKS.registerBlock("flower_2",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_3 = BLOCKS.registerBlock("flower_3",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_5 = BLOCKS.registerBlock("flower_5",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_6 = BLOCKS.registerBlock("flower_6",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_8 = BLOCKS.registerBlock("flower_8",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_9 = BLOCKS.registerBlock("flower_9",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_13 = BLOCKS.registerBlock("flower_13",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_14 = BLOCKS.registerBlock("flower_14",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_15 = BLOCKS.registerBlock("flower_15",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_16 = BLOCKS.registerBlock("flower_16",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> FLOWER_17 = BLOCKS.registerBlock("flower_17",
+            p -> new DyedreamFlowerBlock(MobEffects.HUNGER, 100, p), flowerProps());
+
+    // ========== 双层花（DyedreamDoublePlantBlock） ==========
+    public static final DeferredBlock<DyedreamDoublePlantBlock> FLOWER_7 = BLOCKS.registerBlock("flower_7",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> FLOWER_10 = BLOCKS.registerBlock("flower_10",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> FLOWER_11 = BLOCKS.registerBlock("flower_11",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> FLOWER_12 = BLOCKS.registerBlock("flower_12",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> FLOWER_18 = BLOCKS.registerBlock("flower_18",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+
+    // ========== 单格草（DyedreamFlowerBlock） ==========
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_1 = BLOCKS.registerBlock("grass_1",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_2 = BLOCKS.registerBlock("grass_2",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_3 = BLOCKS.registerBlock("grass_3",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_5 = BLOCKS.registerBlock("grass_5",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_6 = BLOCKS.registerBlock("grass_6",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_7 = BLOCKS.registerBlock("grass_7",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_8 = BLOCKS.registerBlock("grass_8",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_9 = BLOCKS.registerBlock("grass_9",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_11 = BLOCKS.registerBlock("grass_11",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_12 = BLOCKS.registerBlock("grass_12",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_13 = BLOCKS.registerBlock("grass_13",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+    public static final DeferredBlock<DyedreamFlowerBlock> GRASS_14 = BLOCKS.registerBlock("grass_14",
+            p -> new DyedreamFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 100, p), flowerProps());
+
+    // ========== 双层草（DyedreamDoublePlantBlock） ==========
+    public static final DeferredBlock<DyedreamDoublePlantBlock> GRASS_4 = BLOCKS.registerBlock("grass_4",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> GRASS_10 = BLOCKS.registerBlock("grass_10",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
+    public static final DeferredBlock<DyedreamDoublePlantBlock> GRASS_15 = BLOCKS.registerBlock("grass_15",
+            DyedreamDoublePlantBlock::new, doublePlantProps());
 
 }

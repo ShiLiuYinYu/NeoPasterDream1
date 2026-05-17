@@ -2,6 +2,7 @@ package com.pasterdream.pasterdreammod.client.tank;
 
 import com.pasterdream.pasterdreammod.PasterDreamMod;
 import com.pasterdream.pasterdreammod.capability.SanCapability;
+import com.pasterdream.pasterdreammod.config.PDClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +44,12 @@ public class SanTank {
 
         var player = MC.player;
         if (!SanCapability.getSanCheck(player)) return;
+
+        // 检查客户端配置：HUD 渲染开关
+        if (!PDClientConfig.SHOW_SAN_HUD.get()) return;
+
+        // 检查客户端配置：潜行模式（启用时仅潜行才显示）
+        if (PDClientConfig.STEALTH_DISPLAY_HUD.get() && !player.isShiftKeyDown()) return;
 
         MC.getProfiler().push("san_bar");
 

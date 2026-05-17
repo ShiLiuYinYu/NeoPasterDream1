@@ -2,6 +2,7 @@ package com.pasterdream.pasterdreammod.client.tank;
 
 import com.pasterdream.pasterdreammod.PasterDreamMod;
 import com.pasterdream.pasterdreammod.capability.MeltDreamEnergyCapability;
+import com.pasterdream.pasterdreammod.config.PDClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,13 @@ public class MeltdreamEnergyTank {
         if (MC.player.getVehicle() instanceof LivingEntity) return;
 
         var player = MC.player;
+
+        // 检查客户端配置：HUD 渲染开关
+        if (!PDClientConfig.SHOW_MELTDREAM_ENERGY_HUD.get()) return;
+
+        // 检查客户端配置：潜行模式（启用时仅潜行才显示）
+        if (PDClientConfig.STEALTH_DISPLAY_HUD.get() && !player.isShiftKeyDown()) return;
+
         double energy = MeltDreamEnergyCapability.getEnergy(player);
 
         MC.getProfiler().push("meltdreamenergy_bar");

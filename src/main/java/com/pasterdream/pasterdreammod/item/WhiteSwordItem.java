@@ -1,14 +1,8 @@
 package com.pasterdream.pasterdreammod.item;
 
-import com.pasterdream.pasterdreammod.registry.PDItems;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
-import net.neoforged.neoforge.common.SimpleTier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Component;
 import java.util.List;
@@ -18,15 +12,9 @@ import java.util.List;
  */
 public class WhiteSwordItem extends SwordItem {
 
-    private static final Tier WHITESWORDITEM_TIER = new SimpleTier(
-        BlockTags.INCORRECT_FOR_STONE_TOOL,
-        131, 4.0f, 1.0f, 5,
-        () -> Ingredient.of(Items.COBBLESTONE)
-    );
-
     public WhiteSwordItem() {
-        super(WHITESWORDITEM_TIER, new Item.Properties().attributes(
-            SwordItem.createAttributes(WHITESWORDITEM_TIER, 3, -2.4f)
+        super(PDSwordTiers.STONE_LEVEL, new Item.Properties().attributes(
+            SwordItem.createAttributes(PDSwordTiers.STONE_LEVEL, 3, -2.4f)
         ));
     }
 
