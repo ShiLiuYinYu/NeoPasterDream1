@@ -1,6 +1,9 @@
 package com.pasterdream.pasterdreammod.registry;
 
 import com.pasterdream.pasterdreammod.worldgen.IceGateGenerator;
+import com.pasterdream.pasterdreammod.worldgen.CloudBubbleGenerator;
+import com.pasterdream.pasterdreammod.worldgen.IceArchGenerator;
+import com.pasterdream.pasterdreammod.worldgen.FloatingIceGenerator;
 import com.pasterdream.pasterdreammod.worldgen.decor.DecorationBuilder;
 import com.pasterdream.pasterdreammod.worldgen.decor.DecorationRegistry;
 import com.pasterdream.pasterdreammod.worldgen.decor.DecorationType;
@@ -22,6 +25,242 @@ import net.minecraft.tags.BlockTags;
  * 用于后续的 JSON 数据文件自动生成。
  */
 public class ModDecorations {
+    // ==================== 新装饰物（5种） ====================
+
+    /**
+     * 注册云泡泡装饰物
+     * <p>
+     * 在染梦海洋（biome_dyedream_3）海面上空生成由云朵构成的球形结构，
+     * 内部中空，最低在海面 2 格以上，最高在海面 20 格。
+     * 使用 CUSTOM 类型 CloudBubbleGenerator，球壳厚度 1 格。
+     */
+    private static void registerCloudBubble() {
+        SimpleWeightedRandomList<BlockState> cloudBodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.CLOUD.get().defaultBlockState(), 75)
+                .add(PDBlocks.THICK_CLOUD.get().defaultBlockState(), 20)
+                .add(Blocks.WHITE_WOOL.defaultBlockState(), 5)
+                .build();
+
+        DecorationRegistry.registerCustomGenerator("cloud_bubble", new CloudBubbleGenerator());
+
+        DecorationBuilder.create()
+                .type(DecorationType.CUSTOM)
+                .body(new WeightedStateProvider(cloudBodyList))
+                .customGenerator("cloud_bubble")
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.CAVE_AIR, Blocks.WATER))
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(1)
+                .step(GenerationStep.Decoration.TOP_LAYER_MODIFICATION)
+                .register("cloud_bubble");
+    }
+
+    /**
+     * 注册浮冰结构装饰物
+     * <p>
+     * 在染梦海洋（biome_dyedream_3）海面位置生成扁平碟状浮冰，
+     * 上层覆雪，下层浸水，仅使用染梦维度冰系方块。
+     * 使用 CUSTOM 类型 + FloatingIceGenerator，在海面高度生成。
+     */
+    private static void registerFloatingIceMound() {
+        SimpleWeightedRandomList<BlockState> bodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 60)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 40)
+                .build();
+
+        DecorationRegistry.registerCustomGenerator("floating_ice_mound", new FloatingIceGenerator());
+
+        DecorationBuilder.create()
+                .type(DecorationType.CUSTOM)
+                .body(new WeightedStateProvider(bodyList))
+                .top(Blocks.SNOW_BLOCK)
+                .customGenerator("floating_ice_mound")
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.SNOW_BLOCK, PDBlocks.DYEDREAM_ICE.get(), PDBlocks.DYEDREAM_PACKED_ICE.get(), Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(2)
+                .step(GenerationStep.Decoration.TOP_LAYER_MODIFICATION)
+                .register("floating_ice_mound");
+    }
+
+    /**
+     * 注册冰拱门装饰物
+     * <p>
+     * 在染梦海洋（biome_dyedream_3）水底向上形成巨大的半圆拱形冰结构，
+     * 可露出水面 10~30 格不等。水下由冰系方块构成，
+     * 水面上可出现覆雪。
+     * 使用 CUSTOM 类型 + IceArchGenerator，余弦曲线生成半圆拱形路径。
+     */
+    private static void registerIceArch() {
+        SimpleWeightedRandomList<BlockState> pillarBodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 60)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 40)
+                .build();
+
+        SimpleWeightedRandomList<BlockState> topList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 60)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 40)
+                .build();
+
+        DecorationRegistry.registerCustomGenerator("ice_arch", new IceArchGenerator());
+
+        DecorationBuilder.create()
+                .type(DecorationType.CUSTOM)
+                .body(new WeightedStateProvider(pillarBodyList))
+                .top(new WeightedStateProvider(topList))
+                .customGenerator("ice_arch")
+                .height(20, 35)
+                .gateWidth(30, 50)
+                .pillarRadius(4)
+                .beamThickness(4)
+                .decorationChance(0.25f)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.ICE, Blocks.PACKED_ICE, Blocks.BLUE_ICE, Blocks.SNOW_BLOCK, Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .checkHang(false)
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(12)
+                .step(GenerationStep.Decoration.VEGETAL_DECORATION)
+                .register("ice_arch");
+    }
+
+    /**
+     * 注册冰拱门变种装饰物（损坏版本）
+     * <p>
+     * 中间出现不同程度的损坏，导致中间弧形结构下落在水面上，
+     * 形成由冰雪混合的碎冰渣。由冰拱门约 15% 概率改变而来。
+     * 使用 CUSTOM 类型 + IceArchGenerator，更小的尺寸配合碎冰散落效果。
+     */
+    private static void registerIceArchRuined() {
+        SimpleWeightedRandomList<BlockState> pillarBodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 60)
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 40)
+                .build();
+
+        DecorationRegistry.registerCustomGenerator("ice_arch_ruined", new IceArchGenerator());
+
+        DecorationBuilder.create()
+                .type(DecorationType.CUSTOM)
+                .body(new WeightedStateProvider(pillarBodyList))
+                .customGenerator("ice_arch_ruined")
+                .height(15, 25)
+                .gateWidth(20, 35)
+                .pillarRadius(3)
+                .beamThickness(3)
+                .decorationChance(0.4f)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.ICE, Blocks.PACKED_ICE, Blocks.BLUE_ICE, Blocks.SNOW_BLOCK, Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .checkHang(false)
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(35)
+                .step(GenerationStep.Decoration.VEGETAL_DECORATION)
+                .register("ice_arch_ruined");
+    }
+
+    /**
+     * 注册染梦冰柱装饰物
+     * <p>
+     * 在染梦深海（biome_dyedream_deep_ocean）水底冒出海面的冰柱，
+     * 使用染梦维度纯冰系方块，嵌入冰蕾，基部散落碎冰。
+     * 使用 PILLAR 类型，方形截面锥形柱体从海底向上生长至海面以上。
+     */
+    private static void registerDyedreamIcePillar() {
+        SimpleWeightedRandomList<BlockState> bodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 55)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 35)
+                .add(PDBlocks.ICE_BUD_0.get().defaultBlockState(), 10)
+                .build();
+
+        DecorationBuilder.create()
+                .type(DecorationType.PILLAR)
+                .body(new WeightedStateProvider(bodyList))
+                .top(Blocks.SNOW_BLOCK)
+                .crystal(0.1f, BlockStateProvider.simple(PDBlocks.ICE_BUD_0.get()))
+                .debris(PDBlocks.DYEDREAM_PACKED_ICE.get(), 8, 5)
+                .height(12, 25)
+                .width(3, 1)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.SNOW_BLOCK, PDBlocks.DYEDREAM_ICE.get(), PDBlocks.DYEDREAM_PACKED_ICE.get(), Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .checkHang(true)
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(3)
+                .step(GenerationStep.Decoration.VEGETAL_DECORATION)
+                .register("dyedream_ice_pillar");
+    }
+
+    /**
+     * 注册海底冰晶丛装饰物
+     * <p>
+     * 在染梦深海（biome_dyedream_3）海底散布小型冰晶簇，
+     * 由冰蕾和染梦冰块混合构成，稀稀拉拉长在沙地上。
+     * 使用 SCATTER 类型，集群大小 6，检测悬空防止漂浮。
+     */
+    private static void registerIceCrystalCluster() {
+        SimpleWeightedRandomList<BlockState> crystalBodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.ICE_BUD_0.get().defaultBlockState(), 40)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 35)
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 25)
+                .build();
+
+        DecorationBuilder.create()
+                .type(DecorationType.SCATTER)
+                .body(new WeightedStateProvider(crystalBodyList))
+                .clusterSize(6)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .checkHang(true)
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(2)
+                .step(GenerationStep.Decoration.VEGETAL_DECORATION)
+                .register("ice_crystal_cluster");
+    }
+
+    /**
+     * 注册冰霜尖刺装饰物
+     * <p>
+     * 在染梦深海（biome_dyedream_3）海底向上生长的小型冰尖刺，
+     * 高度 3~8 格，圆形锥形截面，形成海底冰笋景观。
+     * 使用 SPIKE 类型，嵌入少量冰蕾。
+     */
+    private static void registerFrostSpike() {
+        SimpleWeightedRandomList<BlockState> spikeBodyList = SimpleWeightedRandomList.<BlockState>builder()
+                .add(PDBlocks.DYEDREAM_PACKED_ICE.get().defaultBlockState(), 60)
+                .add(PDBlocks.DYEDREAM_ICE.get().defaultBlockState(), 40)
+                .build();
+
+        DecorationBuilder.create()
+                .type(DecorationType.SPIKE)
+                .body(new WeightedStateProvider(spikeBodyList))
+                .top(Blocks.SNOW_BLOCK)
+                .crystal(0.1f, BlockStateProvider.simple(PDBlocks.ICE_BUD_0.get()))
+                .height(3, 8)
+                .radius(2, 0)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.WATER, Blocks.ICE, Blocks.PACKED_ICE, Blocks.BLUE_ICE, Blocks.SNOW_BLOCK, Blocks.SAND, Blocks.GRAVEL, PDBlocks.DYEDREAM_SAND.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
+                .checkHang(true)
+                .biome("pasterdream:biome_dyedream_3")
+                .rarity(3)
+                .step(GenerationStep.Decoration.VEGETAL_DECORATION)
+                .register("frost_spike");
+    }
+
     /**
      * 注册所有装饰物 —— 供模组初始化阶段调用
      * <p>
@@ -41,6 +280,13 @@ public class ModDecorations {
         registerIcePillar();
         registerUnderwaterIceSpike();
         registerSeaIceMound();
+        registerCloudBubble();
+        registerFloatingIceMound();
+        registerIceArch();
+        registerIceArchRuined();
+        registerDyedreamIcePillar();
+        registerIceCrystalCluster();
+        registerFrostSpike();
     }
 
     /**
@@ -170,7 +416,8 @@ public class ModDecorations {
      * <p>
      * 对应原 CloudBlobFeature 的密集配置（cluster_size=90, radius=6），
      * 使用 API 内置的 BLOB 类型生成不规则椭球云团，
-     * 开启悬空填充（fillHang）使云朵落在地面不悬空。
+     * 开启悬空填充（fillHang）使云朵落在地面不悬空，
+     * 并启用区域重叠检测（regionCheck）防止叠罗汉。
      */
     private static void registerCloudfallMoundDense() {
         SimpleWeightedRandomList<BlockState> cloudBodyList = SimpleWeightedRandomList.<BlockState>builder()
@@ -187,6 +434,11 @@ public class ModDecorations {
                 .yRadius(2)
                 .irregularity(0.3f)
                 .fillHang(true)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.CAVE_AIR, PDBlocks.CLOUD.get(), PDBlocks.THICK_CLOUD.get(), PDBlocks.DARK_CLOUD.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
                 .biome("#pasterdream:is_dyedream")
                 .rarity(1)
                 .step(GenerationStep.Decoration.TOP_LAYER_MODIFICATION)
@@ -197,7 +449,8 @@ public class ModDecorations {
      * 注册坠云稀疏子特征 —— 用于 random_selector 的子 feature
      * <p>
      * 对应原 CloudBlobFeature 的稀疏配置（cluster_size=55, radius=5），
-     * 使用 API 内置的 BLOB 类型，不规则椭球云团的默认变体。
+     * 使用 API 内置的 BLOB 类型，不规则椭球云团的默认变体，
+     * 并启用区域重叠检测（regionCheck）防止叠罗汉。
      */
     private static void registerCloudfallMoundSparse() {
         SimpleWeightedRandomList<BlockState> cloudBodyList = SimpleWeightedRandomList.<BlockState>builder()
@@ -213,6 +466,11 @@ public class ModDecorations {
                 .yRadius(2)
                 .irregularity(0.35f)
                 .fillHang(true)
+                .regionCheck(true, 0.3f)
+                .replaceable(BlockPredicate.anyOf(
+                    BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.CAVE_AIR, PDBlocks.CLOUD.get(), PDBlocks.THICK_CLOUD.get(), PDBlocks.DARK_CLOUD.get()),
+                    BlockPredicate.matchesTag(BlockTags.REPLACEABLE)
+                ))
                 .biome("#pasterdream:is_dyedream")
                 .rarity(1)
                 .step(GenerationStep.Decoration.TOP_LAYER_MODIFICATION)

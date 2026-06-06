@@ -44,6 +44,11 @@ public class LifeCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
+    private static final String ANIM_PROPERTY = "animation";
+
+    /** 缓存动画属性值，避免每帧查询 block state */
+    private int cachedAnimation = 0;
+
     /** 吸收计时 tick 数（从 0 开始累加） */
     private int useTicks = 0;
     /** 是否正在执行吸收流程 */
@@ -59,6 +64,7 @@ public class LifeCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
      */
     public LifeCrystalBlockEntity(BlockPos pos, BlockState state) {
         super(PDBlockEntities.LIFE_CRYSTAL.get(), pos, state);
+        updateCachedAnimation(state);
     }
 
     /**
@@ -116,18 +122,39 @@ public class LifeCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         return this.cache;
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null) {
+            updateCachedAnimation(getBlockState());
+        }
+    }
+
+    @Override
+    public void setBlockState(BlockState state) {
+        super.setBlockState(state);
+        updateCachedAnimation(state);
+    }
+
     /**
-     * 获取方块状态的 animation 属性值
+     * 更新缓存的动画属性值
+     * 从方块状态中提取 animation 属性并缓存
+     */
+    private void updateCachedAnimation(BlockState state) {
+        if (state.getBlock().getStateDefinition().getProperty(ANIM_PROPERTY) instanceof IntegerProperty prop) {
+            cachedAnimation = state.getValue(prop);
+        } else {
+            cachedAnimation = 0;
+        }
+    }
+
+    /**
+     * 获取方块状态的 animation 属性值（使用缓存，避免每帧查询 block state）
      *
      * @return 0（空闲）或 1（激活）
      */
     private int getAnimationProperty() {
-        if (level == null) return 0;
-        BlockState state = level.getBlockState(worldPosition);
-        if (state.getBlock().getStateDefinition().getProperty("animation") instanceof IntegerProperty prop) {
-            return state.getValue(prop);
-        }
-        return 0;
+        return cachedAnimation;
     }
 
     /**
@@ -136,7 +163,7 @@ public class LifeCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     private void resetAnimationProperty() {
         if (level == null) return;
         BlockState state = level.getBlockState(worldPosition);
-        if (state.getBlock().getStateDefinition().getProperty("animation") instanceof IntegerProperty prop) {
+        if (state.getBlock().getStateDefinition().getProperty(ANIM_PROPERTY) instanceof IntegerProperty prop) {
             level.setBlock(worldPosition, state.setValue(prop, 0), 3);
         }
     }

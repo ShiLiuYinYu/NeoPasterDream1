@@ -235,7 +235,6 @@ public class ShadowGolemEntity extends Monster implements GeoEntity {
     @Override
     public void baseTick() {
         super.baseTick();
-        this.refreshDimensions();
         if (!level().isClientSide()) {
             tickSkill();
         }

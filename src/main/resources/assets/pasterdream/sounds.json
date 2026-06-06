@@ -37,7 +37,18 @@
       {
         "name": "pasterdream:music/dyedream_world",
         "stream": true,
-        "volume": 0.3
+        "volume": 0.2
+      }
+    ]
+  },
+  "dyedream_world_music": {
+    "category": "record",
+    "subtitle": "subtitle.pasterdream.dyedream_world_music",
+    "sounds": [
+      {
+        "name": "pasterdream:music/dyedream_world",
+        "stream": true,
+        "volume": 0.2
       }
     ]
   },
@@ -46,8 +57,9 @@
     "subtitle": "subtitle.pasterdream.sweetdream",
     "sounds": [
       {
-        "name": "pasterdream:sweetdream_music",
-        "stream": true
+        "name": "pasterdream:music/sweetdream_music",
+        "stream": true,
+        "volume": 0.3
       }
     ]
   },
@@ -56,8 +68,9 @@
     "subtitle": "subtitle.pasterdream.snowfall_dream_music",
     "sounds": [
       {
-        "name": "pasterdream:snowfall_dream_music",
-        "stream": true
+        "name": "pasterdream:music/snowfall_dream_music",
+        "stream": true,
+        "volume": 0.4
       }
     ]
   },
@@ -76,8 +89,21 @@
     "subtitle": "subtitle.pasterdream.wind_journey",
     "sounds": [
       {
-        "name": "pasterdream:wind_journey",
-        "stream": true
+        "name": "pasterdream:music/wind_journey",
+        "stream": true,
+        "volume": 0.2
+      }
+    ]
+  },
+
+  "wind_journey1": {
+    "category": "record",
+    "subtitle": "subtitle.pasterdream.wind_journey1",
+    "sounds": [
+      {
+        "name": "pasterdream:music/wind_journey1",
+        "stream": true,
+        "volume": 0.2
       }
     ]
   },
@@ -87,9 +113,9 @@
     "subtitle": "subtitle.pasterdream.music.dream_meadow",
     "sounds": [
       {
-        "name": "pasterdream:music/dream_meadow",
+        "name": "pasterdream:music/dream_meadow_disc",
         "stream": true,
-        "volume": 0.3
+        "volume": 0.2
       }
     ]
   },
@@ -100,7 +126,7 @@
       {
         "name": "pasterdream:music/dream_heath",
         "stream": true,
-        "volume": 0.3
+        "volume": 0.4
       }
     ]
   },
@@ -111,7 +137,7 @@
       {
         "name": "pasterdream:music/dream_taiga",
         "stream": true,
-        "volume": 0.3
+        "volume": 0.2
       }
     ]
   },
@@ -122,7 +148,29 @@
       {
         "name": "pasterdream:music/dream_delta",
         "stream": true,
-        "volume": 0.3
+        "volume": 0.4
+      }
+    ]
+  },
+  "music.snowfall_dream_music": {
+    "category": "music",
+    "subtitle": "subtitle.pasterdream.music.snowfall_dream_music",
+    "sounds": [
+      {
+        "name": "pasterdream:music/snowfall_dream_music",
+        "stream": true,
+        "volume": 0.2
+      }
+    ]
+  },
+  "music.sweetdream_music": {
+    "category": "music",
+    "subtitle": "subtitle.pasterdream.music.sweetdream_music",
+    "sounds": [
+      {
+        "name": "pasterdream:music/sweetdream_music",
+        "stream": true,
+        "volume": 0.2
       }
     ]
   },
@@ -132,7 +180,7 @@
     "subtitle": "subtitle.pasterdream.dream_meadow_music",
     "sounds": [
       {
-        "name": "pasterdream:music/dream_meadow",
+        "name": "pasterdream:music/dream_meadow_disc",
         "stream": true,
         "volume": 0.3
       }

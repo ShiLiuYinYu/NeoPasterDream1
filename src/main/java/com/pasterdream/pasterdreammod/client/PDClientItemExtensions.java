@@ -2,8 +2,11 @@ package com.pasterdream.pasterdreammod.client;
 
 import com.pasterdream.pasterdreammod.PasterDreamMod;
 import com.pasterdream.pasterdreammod.client.renderer.item.DreamAccumulatorDisplayItemRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.item.DreamCauldronDisplayItemRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.item.LifeCrystalDisplayItemRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.item.MeltdreamChestDisplayItemRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.item.ShadowChestDisplayItemRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.item.TheEndlessBookOfDreamSeekersDisplayItemRenderer;
 import com.pasterdream.pasterdreammod.registry.PDItems;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,6 +39,15 @@ public class PDClientItemExtensions {
 
         registerDisplayItem(event, PDItems.SHADOW_CHEST.get(), new ShadowChestDisplayItemRenderer());
         PasterDreamMod.LOGGER.info("[PDClientItemExtensions] 注册显示物品: shadow_chest → ShadowChestDisplayItemRenderer（GeckoLib 3D）");
+
+        registerDisplayItem(event, PDItems.MELTDREAM_CHEST.get(), new MeltdreamChestDisplayItemRenderer());
+        PasterDreamMod.LOGGER.info("[PDClientItemExtensions] 注册显示物品: meltdream_chest → MeltdreamChestDisplayItemRenderer（GeckoLib 3D）");
+
+        registerDisplayItem(event, PDItems.DREAM_CAULDRON.get(), new DreamCauldronDisplayItemRenderer());
+        PasterDreamMod.LOGGER.info("[PDClientItemExtensions] 注册显示物品: dream_cauldron → DreamCauldronDisplayItemRenderer（GeckoLib 3D）");
+
+        registerDisplayItem(event, PDItems.THE_ENDLESS_BOOK_OF_DREAM_SEEKERS.get(), new TheEndlessBookOfDreamSeekersDisplayItemRenderer());
+        PasterDreamMod.LOGGER.info("[PDClientItemExtensions] 注册显示物品: the_endless_book_of_dream_seekers → TheEndlessBookOfDreamSeekersDisplayItemRenderer（GeckoLib 3D）");
     }
 
     /**

@@ -87,6 +87,33 @@
           }
         },
         {
+          "biome": "pasterdream:biome_dyedream_mushroom_plains",
+          "parameters": {
+            "temperature": [
+              0.15,
+              0.55
+            ],
+            "humidity": [
+              0.15,
+              0.7
+            ],
+            "continentalness": [
+              0.1,
+              0.5
+            ],
+            "weirdness": [
+              -0.5,
+              0.4
+            ],
+            "erosion": [
+              -0.3,
+              0.5
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
           "biome": "pasterdream:biome_dyedream_3",
           "parameters": {
             "temperature": [
@@ -98,12 +125,39 @@
               1
             ],
             "continentalness": [
-              -1.05,
+              -0.7,
               -0.11
             ],
             "weirdness": [
               -1,
               -0.85
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "pasterdream:biome_dyedream_deep_ocean",
+          "parameters": {
+            "temperature": [
+              0.2,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -1.05,
+              -0.7
+            ],
+            "weirdness": [
+              -0.85,
+              1
             ],
             "erosion": [
               -1,
@@ -479,7 +533,8 @@
             "if_true": {
               "type": "minecraft:biome",
               "biome_is": [
-                "pasterdream:biome_dyedream_0"
+                "pasterdream:biome_dyedream_0",
+                "pasterdream:biome_dyedream_mushroom_plains"
               ]
             },
             "then_run": {
@@ -695,7 +750,8 @@
             "if_true": {
               "type": "minecraft:biome",
               "biome_is": [
-                "pasterdream:biome_dyedream_3"
+                "pasterdream:biome_dyedream_3",
+                "pasterdream:biome_dyedream_deep_ocean"
               ]
             },
             "then_run": {

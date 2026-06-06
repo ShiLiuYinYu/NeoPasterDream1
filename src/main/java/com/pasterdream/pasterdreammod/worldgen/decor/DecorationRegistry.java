@@ -271,6 +271,66 @@ public class DecorationRegistry {
     }
 
     /**
+     * 自动生成所有已注册装饰物的 biome_modifier JSON 文件
+     * <p>
+     * 在 {@code src/main/resources/data/<modid>/neoforge/biome_modifier/} 目录下生成
+     * biome_modifier JSON 文件，按群系和生成阶段分组。
+     * 每组生成一个文件，文件名为 {@code {biome_simple_name}_{step_name}.json}。
+     * <p>
+     * <b>注意：</b>此方法会<b>覆盖</b>已存在的同名 JSON 文件，
+     * 请在确认无误后调用。已有手动编写的 biome_modifier 文件不会被覆盖
+     * （文件名使用自动生成的命名规则，不会与手动命名的文件冲突）。
+     */
+    public static void generateBiomeModifierJson() {
+        Path basePath = Path.of("src", "main", "resources", "data", PasterDreamMod.MOD_ID,
+                "neoforge", "biome_modifier");
+        if (REGISTERED.isEmpty()) {
+            PasterDreamMod.LOGGER.info("[DecorationRegistry] 无装饰物条目，跳过 biome_modifier 生成");
+            return;
+        }
+        java.util.Map<String, java.util.List<DecorationEntry>> groups = new java.util.LinkedHashMap<>();
+        for (DecorationEntry entry : REGISTERED) {
+            String key = entry.targetBiome() + "|" + entry.step().name();
+            groups.computeIfAbsent(key, k -> new java.util.ArrayList<>()).add(entry);
+        }
+        for (java.util.Map.Entry<String, java.util.List<DecorationEntry>> group : groups.entrySet()) {
+            String key = group.getKey();
+            String biome = key.substring(0, key.indexOf('|'));
+            String stepName = key.substring(key.indexOf('|') + 1).toLowerCase();
+            List<DecorationEntry> entries = group.getValue();
+            String simpleBiomeName = biome;
+            if (biome.startsWith("#")) {
+                simpleBiomeName = "tag_" + biome.substring(biome.indexOf(':') + 1);
+                biome = biome; // keep as-is for JSON
+            } else if (biome.contains(":")) {
+                simpleBiomeName = biome.substring(biome.indexOf(':') + 1);
+            }
+            String fileName = simpleBiomeName + "_" + stepName + ".json";
+            JsonObject root = new JsonObject();
+            root.addProperty("type", "neoforge:add_features");
+            root.addProperty("biomes", biome);
+            JsonArray features = new JsonArray();
+            for (DecorationEntry entry : entries) {
+                features.add(PasterDreamMod.MOD_ID + ":" + entry.name());
+            }
+            root.add("features", features);
+            root.addProperty("step", stepName);
+            try {
+                Files.createDirectories(basePath);
+                Path filePath = basePath.resolve(fileName);
+                Files.writeString(filePath, GSON.toJson(root),
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                PasterDreamMod.LOGGER.debug("  已生成 biome_modifier: {}", filePath);
+            } catch (IOException e) {
+                PasterDreamMod.LOGGER.error("[DecorationRegistry] 生成 biome_modifier 失败: file={}, error={}",
+                        fileName, e.getMessage(), e);
+            }
+        }
+        PasterDreamMod.LOGGER.info("[DecorationRegistry] biome_modifier JSON 文件生成完成! 共生成 {} 个文件", groups.size());
+        PasterDreamMod.LOGGER.info("  输出目录: {}", basePath.toAbsolutePath().normalize());
+    }
+
+    /**
      * 清除所有已注册的装饰物条目
      * <p>
      * 主要用于测试或重新加载场景，正常使用无需调用。

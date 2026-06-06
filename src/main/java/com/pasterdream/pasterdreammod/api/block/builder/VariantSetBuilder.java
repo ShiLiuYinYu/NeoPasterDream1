@@ -1,5 +1,7 @@
 package com.pasterdream.pasterdreammod.api.block.builder;
 
+import com.pasterdream.pasterdreammod.api.block.BlockAPI;
+import com.pasterdream.pasterdreammod.api.block.BlockConfig;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -44,6 +46,9 @@ public class VariantSetBuilder {
     private boolean hasTrapdoor;
     private boolean hasPressurePlate;
     private boolean hasButton;
+
+    @Nullable
+    private String mineable;
 
     @Nullable
     private Block stairsReference;
@@ -329,6 +334,20 @@ public class VariantSetBuilder {
         return this;
     }
 
+    /**
+     * 设置所有变体方块所需的工具类型
+     * <p>
+     * 设置后，每个变体方块会自动注册到对应的 {@code mineable/*} 标签中，
+     * 确保 Jade 模组显示正确的挖掘工具，且方块掉落时验证工具是否正确。
+     *
+     * @param mineable 工具类型，如 {@code "pickaxe"}、{@code "axe"}、{@code "shovel"}、{@code "hoe"}
+     * @return 当前构建器实例
+     */
+    public VariantSetBuilder mineable(String mineable) {
+        this.mineable = mineable;
+        return this;
+    }
+
     // ======================== 构建 & 注册 ========================
 
     /**
@@ -421,8 +440,34 @@ public class VariantSetBuilder {
                     "VariantSetBuilder: 至少需要启用一个变体（如 .withStairs()）");
         }
 
+        // 自动注册挖掘标签配置（如已设置 mineable 类型）
+        if (mineable != null) {
+            BlockConfig config = BlockConfig.of().mineable(mineable);
+            VariantSetResult result = new VariantSetResult(
+                    baseName, stairs, slab, wall, fence, fenceGate,
+                    door, trapdoor, pressurePlate, button);
+
+            registerVariantConfig(stairs, "_stairs", config);
+            registerVariantConfig(slab, "_slab", config);
+            registerVariantConfig(wall, "_wall", config);
+            registerVariantConfig(fence, "_fence", config);
+            registerVariantConfig(fenceGate, "_fencegate", config);
+            registerVariantConfig(door, "_door", config);
+            registerVariantConfig(trapdoor, "_trapdoor", config);
+            registerVariantConfig(pressurePlate, "_pressure_plate", config);
+            registerVariantConfig(button, "_button", config);
+
+            return result;
+        }
+
         return new VariantSetResult(
                 baseName, stairs, slab, wall, fence, fenceGate,
                 door, trapdoor, pressurePlate, button);
+    }
+
+    private void registerVariantConfig(DeferredBlock<?> deferred, String suffix, BlockConfig config) {
+        if (deferred != null) {
+            BlockAPI.putConfig(baseName + suffix, config);
+        }
     }
 }

@@ -26,6 +26,11 @@ sourceSets.main.resources {
     exclude("src/generated/**/.cache") // datagen cache files
 }
 
+// 当手动资源与数据生成器资源冲突时，手动资源优先
+tasks.named('processResources', ProcessResources).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 repositories {
     // GeckoLib Maven repository
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
@@ -199,6 +204,20 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // ======================== 自定义任务 ========================
+
+/**
+ * 运行 RecipeGenerationDemo 生成示例配方 JSON 文件
+ * 生成所有配方类型的示例到 src/main/resources/data/pasterdream/recipe/ 目录。
+ * 使用方式: .\gradlew runRecipeDemo
+ */
+tasks.register('runRecipeDemo', JavaExec) {
+    description = '运行 RecipeGenerationDemo，生成示例配方 JSON 到 resources 目录'
+    group = 'PasterDream'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.pasterdream.pasterdreammod.api.itemmigration.example.RecipeGenerationDemo'
+    workingDir = project.projectDir
+    standardOutput = System.out
+}
 
 /**
  * 运行 DimensionAPI 示例程序

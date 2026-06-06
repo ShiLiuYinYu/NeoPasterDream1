@@ -44,6 +44,9 @@ public class ModMusicManager {
     /** 默认切换冷却 tick 数（100 tick ≈ 5 秒） */
     public static final int DEFAULT_SWITCH_COOLDOWN_TICKS = 100;
 
+    /** 音乐循环间隔 tick 数（60 tick ≈ 3 秒，音乐播完 -> 等待 3 秒 -> 重新播放） */
+    private static final int LOOP_INTERVAL_TICKS = 60;
+
     // ==================== 群系音乐映射 ====================
 
     private static final Map<ResourceLocation, String> BIOME_MUSIC_MAP = new LinkedHashMap<>();
@@ -71,9 +74,6 @@ public class ModMusicManager {
     /** 当前交叉淡化步数（0 ~ CROSSFADE_STEPS） */
     private int crossfadeStep;
 
-    /** 交叉淡化期间的新音乐名称（淡化完成后赋值给 currentMusicName） */
-    private String crossfadeTargetMusicName;
-
     /** 群系切换冷却 tick 数（可配置，默认 5 秒） */
     private int switchCooldownTicks = DEFAULT_SWITCH_COOLDOWN_TICKS;
 
@@ -91,13 +91,23 @@ public class ModMusicManager {
     /** 冷却期开始的游戏 tick 数 */
     private long cooldownStartTick;
 
+    // ==================== 循环重播状态 ====================
+
+    /** 是否在等待循环间隔 */
+    private boolean isWaitingForLoopRestart = false;
+
+    /** 循环间隔开始的游戏 tick 数 */
+    private long loopRestartStartTick = 0;
+
     // ==================== 静态初始化 ====================
 
     static {
-        registerBiomeMusic("biome_dyedream_0", "dream_meadow");
+        registerBiomeMusic("biome_dyedream_0", "dyedream_world");
         registerBiomeMusic("biome_dyedream_1", "dream_heath");
-        registerBiomeMusic("biome_dyedream_2", "dream_taiga");
-        registerBiomeMusic("biome_dyedream_3", "dream_delta");
+        registerBiomeMusic("biome_dyedream_2", "dream_delta");
+        registerBiomeMusic("biome_dyedream_3", "dream_taiga");
+        registerBiomeMusic("biome_dyedream_deep_ocean", "sweetdream_music");
+        registerBiomeMusic("biome_dyedream_mushroom_plains", "snowfall_dream_music");
     }
 
     private ModMusicManager() {
@@ -224,13 +234,13 @@ public class ModMusicManager {
                 // 回到了原群系 → 取消冷却
                 isInCooldown = false;
                 pendingBiomeId = null;
-                PasterDreamMod.LOGGER.debug("[ModMusicManager] 切换冷却已取消，回到原群系");
+                // terDreamMod.LOGGER.debug("[ModMusicManager] 切换冷却已取消，回到原群系");
             } else {
                 // 又进入了另一个新群系 → 重置冷却
                 pendingBiomeId = currentBiomeId;
                 pendingMusicName = musicName;
                 cooldownStartTick = gameTick;
-                PasterDreamMod.LOGGER.debug("[ModMusicManager] 冷却期间进入新群系，冷却重置");
+                // terDreamMod.LOGGER.debug("[ModMusicManager] 冷却期间进入新群系，冷却重置");
             }
             previousBiomeId = currentBiomeId;
             return;
@@ -250,8 +260,6 @@ public class ModMusicManager {
             pendingBiomeId = currentBiomeId;
             pendingMusicName = musicName;
             cooldownStartTick = gameTick;
-            PasterDreamMod.LOGGER.debug("[ModMusicManager] 群系变化，进入切换冷却 ({} ticks)",
-                    switchCooldownTicks);
             return;
         }
 
@@ -259,6 +267,23 @@ public class ModMusicManager {
         if (fadeState == FadeState.IDLE && currentSound == null
                 && fadingOutSound == null && musicName != null) {
             startMusicDirect(musicName);
+        }
+
+        // ==================== 循环重播检测 ====================
+        // 当非循环 BGM 播放完毕后，等待 LOOP_INTERVAL_TICKS 后重新播放
+        if (fadeState == FadeState.IDLE && currentMusicName != null
+                && currentSound != null && !isInCooldown) {
+            if (!Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
+                if (!isWaitingForLoopRestart) {
+                    isWaitingForLoopRestart = true;
+                    loopRestartStartTick = gameTick;
+                } else if (gameTick - loopRestartStartTick >= LOOP_INTERVAL_TICKS) {
+                    isWaitingForLoopRestart = false;
+                    restartCurrentMusic();
+                }
+            } else {
+                isWaitingForLoopRestart = false;
+            }
         }
     }
 
@@ -277,83 +302,56 @@ public class ModMusicManager {
     /**
      * 触发交叉淡化
      * <p>
-     * 由冷却系统在冷却结束后调用。会检查新音乐名称是否不等于当前音乐。
+     * 由冷却系统在冷却结束后调用。新音乐立即以目标音量持续播放（循环），
+     * 旧音乐继续播放；经过 CROSSFADE_STEPS tick 后停止旧音乐。
+     * 不再每 tick 重建声音实例，避免通道堆积导致的多重播放。
      *
      * @param newMusicName 目标音乐名称
      */
     private void handleCrossfade(String newMusicName) {
-        // 相同音乐 → 不切换
         if (newMusicName != null && newMusicName.equals(currentMusicName)) {
             return;
         }
 
-        // 没有旧音乐播放 → 直接淡入新音乐
         if (currentSound == null) {
             startMusicDirect(newMusicName);
             return;
         }
 
-        // 新音乐为 null → 停止当前音乐
         if (newMusicName == null) {
             stopAllMusic();
             return;
         }
 
-        // 开始交叉淡化
         fadingOutSound = currentSound;
         fadingOutMusicName = currentMusicName;
-        crossfadeTargetMusicName = newMusicName;
-        currentSound = null;
-        currentMusicName = null;
+
+        SoundEvent soundEvent = lookupSoundEvent(newMusicName);
+        if (soundEvent == null) return;
+        currentSound = VolumeSoundInstance.forMusic(soundEvent, TARGET_VOLUME);
+        currentMusicName = newMusicName;
+        Minecraft.getInstance().getSoundManager().play(currentSound);
 
         fadeState = FadeState.FADING;
         crossfadeStep = 0;
-
-        PasterDreamMod.LOGGER.debug("[ModMusicManager] 开始交叉淡化: {} → {}",
-                fadingOutMusicName, newMusicName);
     }
 
     /**
      * 执行一步交叉淡化
      * <p>
-     * 每步同时更新旧音乐和新音乐的音量：
-     * <ul>
-     *   <li>旧音乐音量 = TARGET_VOLUME * (剩余步数 / 总步数)</li>
-     *   <li>新音乐音量 = TARGET_VOLUME * (当前步数 / 总步数)</li>
-     * </ul>
+     * 仅计时计数，不操作声音实例。到期后停止旧音乐。
      */
     private void processCrossfadeStep() {
         if (crossfadeStep >= CROSSFADE_STEPS) {
-            // 交叉淡化完成
             if (fadingOutSound != null) {
                 Minecraft.getInstance().getSoundManager().stop(fadingOutSound);
             }
             fadingOutSound = null;
             fadingOutMusicName = null;
-            currentMusicName = crossfadeTargetMusicName;
-            crossfadeTargetMusicName = null;
             fadeState = FadeState.IDLE;
-            PasterDreamMod.LOGGER.debug("[ModMusicManager] 交叉淡化完成: {}", currentMusicName);
             return;
         }
-
         crossfadeStep++;
-        float progress = (float) crossfadeStep / CROSSFADE_STEPS;
-
-        // 旧音乐音量递减
-        float oldVolume = TARGET_VOLUME * (1.0f - progress);
-        if (oldVolume > 0.001f && fadingOutMusicName != null) {
-            recreateFadingSound(fadingOutMusicName, oldVolume);
-        } else {
-            if (fadingOutSound != null) {
-                Minecraft.getInstance().getSoundManager().stop(fadingOutSound);
-                fadingOutSound = null;
-            }
-        }
-
-        // 新音乐音量递增
-        float newVolume = TARGET_VOLUME * progress;
-        recreateCurrentSound(crossfadeTargetMusicName, newVolume);
     }
 
     /**
@@ -362,50 +360,27 @@ public class ModMusicManager {
     private void startMusicDirect(String musicName) {
         if (musicName == null) return;
         stopAllMusic();
-        currentMusicName = musicName;
-        fadeState = FadeState.FADING;
-        crossfadeStep = CROSSFADE_STEPS;
-        recreateCurrentSound(musicName, TARGET_VOLUME);
-        fadeState = FadeState.IDLE;
-        PasterDreamMod.LOGGER.debug("[ModMusicManager] 直接播放: music.{}", musicName);
-    }
-
-    // ==================== 声音实例管理 ====================
-
-    /**
-     * 重新创建正在淡出的旧音乐声音实例
-     */
-    private void recreateFadingSound(String musicName, float volume) {
-        SoundEvent soundEvent = lookupSoundEvent(musicName);
-        if (soundEvent == null) {
-            if (fadingOutSound != null) {
-                Minecraft.getInstance().getSoundManager().stop(fadingOutSound);
-                fadingOutSound = null;
-            }
-            return;
-        }
-
-        if (fadingOutSound != null) {
-            Minecraft.getInstance().getSoundManager().stop(fadingOutSound);
-        }
-
-        fadingOutSound = VolumeSoundInstance.forMusic(soundEvent, volume);
-        Minecraft.getInstance().getSoundManager().play(fadingOutSound);
-    }
-
-    /**
-     * 重新创建当前音乐声音实例
-     */
-    private void recreateCurrentSound(String musicName, float volume) {
         SoundEvent soundEvent = lookupSoundEvent(musicName);
         if (soundEvent == null) return;
+        currentMusicName = musicName;
+        currentSound = VolumeSoundInstance.forMusic(soundEvent, TARGET_VOLUME);
+        Minecraft.getInstance().getSoundManager().play(currentSound);
+    }
 
+    /**
+     * 重新播放当前音乐（循环重播用）
+     * <p>
+     * 当非循环 BGM 播放完毕、经过 LOOP_INTERVAL_TICKS 后调用此方法。
+     */
+    private void restartCurrentMusic() {
+        if (currentMusicName == null) return;
         if (currentSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentSound);
+            currentSound = null;
         }
-
-        currentMusicName = musicName;
-        currentSound = VolumeSoundInstance.forMusic(soundEvent, volume);
+        SoundEvent soundEvent = lookupSoundEvent(currentMusicName);
+        if (soundEvent == null) return;
+        currentSound = VolumeSoundInstance.forMusic(soundEvent, TARGET_VOLUME);
         Minecraft.getInstance().getSoundManager().play(currentSound);
     }
 
@@ -439,10 +414,10 @@ public class ModMusicManager {
         }
         currentMusicName = null;
         fadingOutMusicName = null;
-        crossfadeTargetMusicName = null;
         fadeState = FadeState.IDLE;
         isInCooldown = false;
         pendingBiomeId = null;
         pendingMusicName = null;
+        isWaitingForLoopRestart = false;
     }
 }

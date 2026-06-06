@@ -88,9 +88,21 @@ public class PDCreativeTabs {
                         output.accept(PDBlocks.DYEDREAMQUARTZ_BLOCK_SLAB.get());
                         output.accept(PDBlocks.DYEDREAMQUARTZ_BLOCK_WALL.get());
 
+                        // 方解石系列
+                        output.accept(PDBlocks.POLISHED_CALCITE.get());
+                        output.accept(PDBlocks.POLISHED_CALCITE_STAIRS.get());
+                        output.accept(PDBlocks.POLISHED_CALCITE_SLAB.get());
+                        output.accept(PDBlocks.POLISHED_CALCITE_WALL.get());
+                        output.accept(PDBlocks.CALCITE_TILES.get());
+                        output.accept(PDBlocks.CALCITE_TILES_STAIRS.get());
+                        output.accept(PDBlocks.CALCITE_TILES_SLAB.get());
+                        output.accept(PDBlocks.CALCITE_TILES_WALL.get());
+
                         // 树木与木板
                         output.accept(PDBlocks.DYEDREAM_LOG.get());
                         output.accept(PDBlocks.DYEDREAM_WOOD.get());
+                        output.accept(PDBlocks.STRIPPED_DYEDREAM_LOG.get());
+                        output.accept(PDBlocks.STRIPPED_DYEDREAM_WOOD.get());
                         output.accept(PDBlocks.DYEDREAM_LEAVES.get());
                         output.accept(PDBlocks.DYEDREAM_WORLDTREE_LEAVES.get());
                         output.accept(PDBlocks.DYEDREAM_PLANKS.get());
@@ -205,6 +217,33 @@ public class PDCreativeTabs {
                         output.accept(PDItems.DYEDREAM_PICKAXE.get());
                         output.accept(PDItems.DYEDREAM_HAMMER.get());
                         output.accept(PDItems.DYEDREAM_COROLLA.get());
+
+                        // Phase 1: 移植方块
+                        output.accept(PDBlocks.PEBBLE_0.get());
+                        output.accept(PDBlocks.GOLDENROD.get());
+                        output.accept(PDBlocks.CROP_0A.get());
+                        output.accept(PDBlocks.CROP_1A.get());
+                        output.accept(PDBlocks.CROP_2A.get());
+                        output.accept(PDBlocks.CROP_3A.get());
+                        output.accept(PDBlocks.CROP_4A.get());
+                        output.accept(PDBlocks.VINE_0.get());
+                        output.accept(PDBlocks.SHADOW_LIGHT_0.get());
+
+                        // 融梦水晶箱
+                        output.accept(PDItems.MELTDREAM_CHEST.get());
+                        output.accept(PDItems.MELTDREAM_CHEST_OPEN.get());
+
+                        // 梦境炼药锅
+                        output.accept(PDItems.DREAM_CAULDRON.get());
+
+                        // 寻梦者的永恒书卷
+                        output.accept(PDItems.THE_ENDLESS_BOOK_OF_DREAM_SEEKERS.get());
+
+                        // 梦境列车结构方块
+                        output.accept(PDItems.DREAM_TRAIN_STRUCTURE.get());
+
+                        // 融梦涌泉桶
+                        output.accept(PDItems.MELTDREAM_LIQUID_BUCKET.get());
                     })
                     .build());
 
@@ -260,6 +299,8 @@ public class PDCreativeTabs {
                         output.accept(PDItems.WINDRUNNER_CRYSTAL.get());
                         output.accept(PDItems.PULSE_WINDRUNNER_CRYSTAL.get());
                         output.accept(PDItems.CONGEAL_WIND.get());
+                        output.accept(PDBlocks.WINDRUNNER_CRYSTAL_ORE.get());
+                        output.accept(PDBlocks.CONGEAL_WIND_ORE.get());
                         output.accept(PDItems.WIND_KNIGHT_FLAG.get());
                         output.accept(PDBlocks.CLOUD.get());
                         output.accept(PDBlocks.DARK_CLOUD.get());
@@ -391,6 +432,24 @@ public class PDCreativeTabs {
                         output.accept(PDItems.GLASS_CUP.get());
                         output.accept(PDItems.DOUGH.get());
                         output.accept(PDItems.RYESEED.get());
+
+                        // Phase 1: 移植方块
+                        output.accept(PDBlocks.TITANIUM_BLOCK.get());
+                        output.accept(PDBlocks.RAW_TITANIUM_BLOCK.get());
+                        output.accept(PDBlocks.MOLTENGOLD_BLOCK.get());
+                        output.accept(PDBlocks.BLACKMETAL_BLOCK.get());
+                        output.accept(PDBlocks.CHARGED_AMETHYST_BLOCK.get());
+                        output.accept(PDBlocks.WIND_IRON_BLOCK.get());
+                        output.accept(PDBlocks.DEEPSLATE_TITANIUM_ORE.get());
+                        output.accept(PDBlocks.TITANIUM_ORE.get());
+                        output.accept(PDBlocks.MOLTENGOLD_ORE.get());
+                        output.accept(PDBlocks.SOUL_ORE.get());
+
+                        // Phase 1: 移植特殊物品
+                        output.accept(PDItems.JUNGLE_SPORE.get());
+                        output.accept(PDItems.MELTDREAM_LIQUID_BUCKET.get());
+                        output.accept(PDItems.PINKEGG.get());
+                        output.accept(PDItems.PLIERS.get());
                     })
                     .build());
 
@@ -539,11 +598,61 @@ public class PDCreativeTabs {
                         output.accept(PDItems.SWEETDREAM_DISC.get());
                         output.accept(PDItems.SNOWFALLDREAM_DISC.get());
                         output.accept(PDItems.AARONCOS_DISC.get());
+                        output.accept(PDItems.DYEDREAM_WORLD_DISC.get());
                         output.accept(PDItems.WIND_JOURNEY_DISC.get());
+                        output.accept(PDItems.WIND_JOURNEY_1_DISC.get());
                         output.accept(PDItems.DREAM_MEADOW_DISC.get());
                         output.accept(PDItems.DREAM_HEATH_DISC.get());
                         output.accept(PDItems.DREAM_TAIGA_DISC.get());
                         output.accept(PDItems.DREAM_DELTA_DISC.get());
+                    })
+                    .build());
+
+    // ==================== 10. 调试功能 ====================
+
+    /**
+     * 调试功能标签页
+     * 包含用于快速生成遗迹结构的调试法杖，仅在开发阶段使用
+     */
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DEBUG_TAB = TABS.register("debug_tab",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.pasterdream.debug_tab"))
+                    .icon(() -> new ItemStack(PDItems.DEBUG_WAND_DREAM_TRAIN.get()))
+                    .withTabsBefore(DISC_TAB.getKey())
+                    .displayItems((parameters, output) -> {
+                        output.accept(PDItems.DEBUG_WAND_DREAM_TRAIN.get());
+                        output.accept(PDItems.DEBUG_WAND_WORLDTREE.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC_0.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC_1.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC_2.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC_3.get());
+                        output.accept(PDItems.DEBUG_WAND_CLOUD_BUBBLE.get());
+                        output.accept(PDItems.DEBUG_WAND_FLOATING_ICE_MOUND.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_ARCH.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_ARCH_RUINED.get());
+                        output.accept(PDItems.DEBUG_WAND_DYEDREAM_ICE_PILLAR.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_CRYSTAL_CLUSTER.get());
+                        output.accept(PDItems.DEBUG_WAND_FROST_SPIKE.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_GATE.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_SPIKE.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_CRYSTAL_GARDEN.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_CRYSTAL_SPIKE.get());
+                        output.accept(PDItems.DEBUG_WAND_ICE_PILLAR.get());
+                        output.accept(PDItems.DEBUG_WAND_UNDERWATER_ICE_SPIKE.get());
+                        output.accept(PDItems.DEBUG_WAND_SEA_ICE_MOUND.get());
+                        output.accept(PDItems.DEBUG_WAND_CORAL_REEF.get());
+                        output.accept(PDItems.DEBUG_WAND_CORAL_REEF_PINK.get());
+                        output.accept(PDItems.DEBUG_WAND_MEGA_MUSHROOM.get());
+                        output.accept(PDItems.DEBUG_WAND_MEGA_CALCITE_PILLAR.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC_CLUSTER.get());
+                        output.accept(PDItems.DEBUG_WAND_CALCITE_PILLAR.get());
+                        output.accept(PDItems.DEBUG_WAND_SEAGRASS.get());
+                        output.accept(PDItems.DEBUG_WAND_GRASS.get());
+                        output.accept(PDItems.DEBUG_WAND_BUDS.get());
+                        output.accept(PDItems.DEBUG_WAND_LOTUS.get());
+                        output.accept(PDItems.DEBUG_WAND_LILY_PAD.get());
+                        output.accept(PDItems.DEBUG_WAND_PINKAGARIC.get());
+                        output.accept(PDItems.DEBUG_WAND_ROCK.get());
                     })
                     .build());
 

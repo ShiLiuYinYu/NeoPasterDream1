@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "pasterdream:block/goldenrod_cross",
+    "particle": "pasterdream:block/goldenrod_cross"
+  },
+  "render_type": "cutout"
+}

@@ -136,6 +136,28 @@ public class PDParticles {
             .generateJson(false)
             .build();
 
+    /**
+     * 荧光羽毛粒子（feather_white_particle）
+     * 12帧白色羽毛粒子，用于染梦深海生物群系的发光浮游生物效果。
+     */
+    public static final ParticleResult FEATHER_WHITE_PARTICLE = ParticleAPI.createParticle("feather_white_particle")
+            .alwaysShow(true)
+            .texture("pasterdream:feather_white_particle")
+            .withGravity(-0.004f)
+            .generateJson(false)
+            .build();
+
+    /**
+     * 染梦孢子粒子（dyedream_0_particle）
+     * 1帧暖金色孢子粒子，用于蘑菇平原生物群系的发光孢子粉尘效果。
+     */
+    public static final ParticleResult DYEDREAM_0_PARTICLE = ParticleAPI.createParticle("dyedream_0_particle")
+            .alwaysShow(true)
+            .texture("pasterdream:dyedream_0_particle")
+            .withGravity(0.003f)
+            .generateJson(false)
+            .build();
+
     // 静态初始化：将现有粒子注册到 ParticleAPI 缓存中，方便后续查询和 Provider 注册
     static {
         ParticleAPI.cacheParticle(new ParticleResult("meltdream_crystal_particle", MELTDREAM_CRYSTAL_PARTICLE));

@@ -23,19 +23,6 @@ public class DyedreamGrassBlock extends Block {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        String blockName = BuiltInRegistries.BLOCK.getKey(this).toString();
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] ===== getDrops() 被调用 =====");
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 方块: {}", blockName);
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 方块状态: {}", state);
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 方块类: {}", this.getClass().getName());
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 掉落策略: 掉落自身 (this={})", this);
-        List<ItemStack> drops = List.of(new ItemStack(this));
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 掉落列表: {} (数量={})", drops, drops.size());
-        if (!drops.isEmpty()) {
-            PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] 掉落物品[0]: {} (空={})",
-                drops.get(0).getItem().toString(), drops.get(0).isEmpty());
-        }
-        PasterDreamMod.LOGGER.info("[DyedreamGrassBlock] ===== getDrops() 结束 =====");
-        return drops;
+        return List.of(new ItemStack(this));
     }
 }

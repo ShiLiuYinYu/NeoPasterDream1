@@ -1,5 +1,7 @@
 package com.pasterdream.pasterdreammod.api.block.builder;
 
+import com.pasterdream.pasterdreammod.api.block.BlockAPI;
+import com.pasterdream.pasterdreammod.api.block.BlockConfig;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -52,6 +54,8 @@ public class BatchBlockBuilder {
     private BiFunction<Integer, BlockBehaviour.Properties, Block> factory;
     @Nullable
     private BlockBehaviour.Properties properties;
+    @Nullable
+    private String mineable;
 
     /**
      * 构造批量命名变种构建器
@@ -135,6 +139,19 @@ public class BatchBlockBuilder {
     }
 
     /**
+     * 设置所有批量方块所需的工具类型
+     * <p>
+     * 设置后会自动注册到对应的 {@code mineable/*} 标签中。
+     *
+     * @param mineable 工具类型，如 {@code "pickaxe"}、{@code "axe"} 等
+     * @return 当前构建器实例
+     */
+    public BatchBlockBuilder mineable(String mineable) {
+        this.mineable = mineable;
+        return this;
+    }
+
+    /**
      * 执行注册，批量注册所有方块
      * <p>
      * 使用 {@link DeferredRegister.Blocks#registerBlock} 注册，
@@ -156,6 +173,7 @@ public class BatchBlockBuilder {
         }
 
         Map<String, DeferredBlock<Block>> results = new LinkedHashMap<>();
+        BlockConfig config = mineable != null ? BlockConfig.of().mineable(mineable) : null;
         for (int index : indices) {
             if (exclusions.contains(index)) {
                 continue;
@@ -164,6 +182,9 @@ public class BatchBlockBuilder {
             int capturedIndex = index;
             results.put(fullName,
                     registry.registerBlock(fullName, p -> factory.apply(capturedIndex, p), props));
+            if (config != null) {
+                BlockAPI.putConfig(fullName, config);
+            }
         }
 
         return Collections.unmodifiableMap(results);

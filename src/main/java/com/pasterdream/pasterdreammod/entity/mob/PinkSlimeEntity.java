@@ -111,7 +111,6 @@ public class PinkSlimeEntity extends PathfinderMob {
     @Override
     public void baseTick() {
         super.baseTick();
-        this.refreshDimensions();
         if (!level().isClientSide()) {
             doRandomJump();
             doFallParticles();

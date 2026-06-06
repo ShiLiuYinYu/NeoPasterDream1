@@ -12,10 +12,13 @@ import com.pasterdream.pasterdreammod.registry.PDEffects;
 import com.pasterdream.pasterdreammod.registry.PDEntities;
 import com.pasterdream.pasterdreammod.registry.PDEntityEvents;
 import com.pasterdream.pasterdreammod.registry.PDFeatures;
+import com.pasterdream.pasterdreammod.registry.PDFluids;
+import com.pasterdream.pasterdreammod.registry.PDFluidsType;
 import com.pasterdream.pasterdreammod.api.itemmigration.ItemMigrationAPI;
 import com.pasterdream.pasterdreammod.registry.PDItems;
 import com.pasterdream.pasterdreammod.registry.PDMenus;
 import com.pasterdream.pasterdreammod.registry.ModDecorations;
+import com.pasterdream.pasterdreammod.registry.PDRuinsRegistration;
 import com.pasterdream.pasterdreammod.api.block.BlockAPI;
 import com.pasterdream.pasterdreammod.api.ruin.RuinAPI;
 import com.pasterdream.pasterdreammod.registry.PDParticles;
@@ -89,6 +92,10 @@ public class PasterDreamMod {
         // 注册结构类型（新方式：RuinAPI 自动管理）
         RuinAPI.REGISTRY.register(modEventBus);
 
+        // 注册染梦遗迹结构（染梦列车、巨型染梦树、粉红菇屋等）
+        // 必须在构造器中注册，因为 RuinBuilder.build() 会向 DeferredRegister 添加新条目
+        PDRuinsRegistration.register();
+
         // 注册菜单类型
         PDMenus.MENUS.register(modEventBus);
 
@@ -100,6 +107,12 @@ public class PasterDreamMod {
 
         // 注册通用装饰物特征（WorldDecorationAPI）
         DecorationRegistry.FEATURES.register(modEventBus);
+
+        // 注册流体类型
+        PDFluidsType.FLUID_TYPES.register(modEventBus);
+
+        // 注册流体
+        PDFluids.FLUIDS.register(modEventBus);
 
         // 监听通用设置事件
         modEventBus.addListener(this::commonSetup);

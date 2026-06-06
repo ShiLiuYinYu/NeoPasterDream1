@@ -429,7 +429,13 @@ BlockAPI.registerSimpleBlocks()
 
 // ===== 模式二：VariantSetBuilder（建筑变体族）=====
 // 注册 stair/slab/wall/fence/gate/door/trapdoor/button/pressure_plate
+// 使用 .mineable() 自动注册所有变体的挖掘标签 → runData 自动生成
 BlockAPI.registerVariantSet("dyedream_planks", Blocks.OAK_PLANKS)
+    .mineable("axe")                                      // 所有变体自动 axe 标签 ✨
+    .withStairs()
+    .withSlab()
+    .withFence()
+    .withFenceGate(WoodType.OAK)
     .build();
 
 // ===== 模式三：BatchBlockBuilder（编号同类）=====
@@ -442,18 +448,134 @@ BlockAPI.registerBatchBlocks()
 > **注意**：`PDBlockTagProvider` 和 `PDBlockModelProvider` 会自动读取 `BlockAPI.putConfig()` 存储的配置，
 > 运行 `runData` 即可生成对应的 `tags/`、`models/`、`blockstates/` JSON 文件。
 
-#### 数据生成器工作流
+#### 数据生成器工作流（已可用 ✅）
 
+**流程：**
 1. 在 `PDBlocks.java` 中用 `BlockAPI` + `BlockConfig` 注册方块
-2. 运行 `.\gradlew runData` 生成标签 + 模型 JSON
-3. 生成的资源在 `src/generated/resources/` 目录
-4. 启动游戏验证工具图标和模型显示
+2. 为手动注册的方块在 `static {}` 块中添加 `BlockAPI.putConfig()`（详见下文）
+3. 运行 `.\gradlew runData` → 自动生成 4 个标签 + 批量生成 blockstate 和模型 JSON
+4. 生成的资源在 `src/generated/resources/`，`src/main/resources/` 优先覆盖
+5. 启动游戏，Jade 模组会正确显示"需要 XX 工具挖掘"
 
-> ⚠️ **当前状态**：`PDBlockTagProvider` 和 `PDBlockModelProvider` 已完成并注册到 `PasterDreamMod.gatherData()`。
-> 但 `compileJava` 被 EntityAPI/ParticleAPI 中的前置错误阻塞（与 BlockAPI 无关），
-> 修复后方可运行 `runData`。
+**生成内容：**
+| 数据生成器 | 输出路径 | 内容 |
+|-----------|---------|------|
+| `PDBlockTagProvider` | `tags/block/mineable/{pickaxe,axe,shovel,hoe}.json` | 工具类型标签（MC 1.21 新路径） |
+| `PDBlockModelProvider` | `models/block/*.json` + `blockstates/*.json` | 方块模型和状态（仅限有 model/tex 配置的方块） |
+
+> ✅ **已可用**：`compileJava` 已修复，`runData` 可正常运行。
+> 注意生成器使用 `tags/block/`（新标准路径），与 `tags/blocks/`（旧路径）不同。
+
+#### BlockAPI.putConfig() — 手动注册的方块配置
+
+对于**不通过 `SimpleBlockBuilder`/`VariantSetBuilder`/`BatchBlockBuilder`** 注册的方块，
+必须在 `PDBlocks.java` 的 `static {}` 块中手动调用 `BlockAPI.putConfig()`：
+
+```java
+static {
+    // Phase 1 移植方块
+    BlockAPI.putConfig("titanium_block", BlockConfig.of().mineable("pickaxe"));
+    BlockAPI.putConfig("deepslate_titanium_ore", BlockConfig.of().mineable("pickaxe"));
+
+    // 手动注册的 requiresCorrectToolForDrops 方块
+    BlockAPI.putConfig("dream_accumulator", BlockConfig.of().mineable("pickaxe"));
+    BlockAPI.putConfig("dyedream_desk", BlockConfig.of().mineable("axe"));
+}
+```
+
+> ⚠️ **必须调用**：未调 `putConfig` 的方块不会被 `PDBlockTagProvider` 识别，导致：
+> - Jade 不显示挖掘工具图标
+> - `requiresCorrectToolForDrops()` 无法正常工作（方块不掉落）
+>
+> **已覆盖的方块类型（无需重复添加）：**
+> - `SIMPLE_BLOCKS.add()` → `SimpleBlockBuilder.build()` 自动调用 ✅
+> - `VariantSetBuilder` + `.mineable("xxx")` → `build()` 自动调用 ✅
+> - `BatchBlockBuilder` + `.mineable("xxx")` → `build()` 自动调用 ✅
+
+#### needs_stone_tool — 挖掘等级标签（手动维护）
+
+`needs_stone_tool` 标签**不由数据生成器生成**，需在 `src/main/resources/data/minecraft/tags/block/needs_stone_tool.json` 手动维护：
+
+```json
+{
+  "values": [
+    "pasterdream:dyedreamquartz_ore",
+    "pasterdream:titanium_ore",
+    "pasterdream:deepslate_titanium_ore",
+    "pasterdream:moltengold_ore",
+    "pasterdream:soul_ore",
+    "pasterdream:windrunner_crystal_ore",
+    "pasterdream:congeal_wind_ore",
+    "pasterdream:amber_candy_ore",
+    "pasterdream:dyedreamdust_ore"
+  ]
+}
+```
+
+> 所有矿石方块都需要至少石镐挖掘。装饰性方块（如 `dyedream_block`）不需要等级限制。
+
+#### SelfDropBlock — 掉落物混合策略
+
+所有通过 `SIMPLE_BLOCKS.add()` 注册的方块使用 `SelfDropBlock` 作为工厂类，
+其 `getDrops()` 采用**"战利品表优先，空则回退自掉落"**的混合策略：
+
+```java
+@Override
+public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+    List<ItemStack> drops = super.getDrops(state, params);  // 优先战利品表
+    if (drops.isEmpty()) {
+        return List.of(new ItemStack(this));                 // 空则自掉落
+    }
+    return drops;
+}
+```
+
+- **有战利品表的方块（矿石等）** → 使用战利品表（精准采集+时运）✅
+- **无战利品表的方块（装饰方块）** → 回退为掉落自身 ✅
+- **手动注册的方块（`Block::new`、`RotatedPillarBlock::new`、`BaseEntityBlock` 等）** → 需要自己在 Java 中 override `getDrops()` 或创建战利品表 JSON
 
 #### 交互与动画（预留）
 
 `BlockConfig` 已预留 `.interact()` 和 `.animated()` 支持位，但目前的 `SimpleBlockBuilder` 只注册 `SelfDropBlock`（纯换皮方块），
 不会自动创建带交互或动画的自定义方块类。如需交互/动画，当前仍需手写 Block 子类 + BlockEntity。
+
+#### 方块掉落物完整性检查
+
+**新注册方块时，必须确保掉落物机制正确。以下是检查清单：**
+
+**检查方法：** 查找方块类 → 看是否有 `getDrops()` → 看是否有战利品表 JSON
+
+| 注册方式 | 掉落机制 | 校验要点 |
+|---------|---------|---------|
+| `SIMPLE_BLOCKS.add()` | `SelfDropBlock` 混合策略 | ✅ 自动，无需额外操作 |
+| `VariantSetBuilder` + `.mineable()` | 战利品表 JSON | ✅ Builder 处理标签，需要手动批量生成战利品表 |
+| `BatchBlockBuilder` | Block::new → 需要战利品表 | ⚠️ 使用自定义工厂类（如 `DyedreamFlowerBlock`）必须确保该类有 `getDrops()` |
+| 手动 `registerBlock(Block::new)` | 需要战利品表 JSON | ⚠️ 必须创建对应 loot_table |
+| 手动 `registerBlock(CustomClass::new)` | 自定义类 getDrops() | ✅ 已有 getDrops 则自动 |
+| 手动 `registerSimpleBlock()` | 需要战利品表 JSON | ⚠️ 必须创建对应 loot_table |
+
+**掉落物缺失的典型症状：**
+- 方块被破坏后不产生任何掉落物粒子
+- Jade/WAILA 显示无掉落物
+- 即使空手/无附魔工具也什么都不掉
+
+**快速修复方案：**
+1. **自定义方块类** → 添加 `getDrops()` 返回 `List.of(new ItemStack(this))`
+2. **原生类方块（StairBlock 等）** → 在 `data/pasterdream/loot_tables/blocks/` 创建自掉落 JSON
+3. **矿石类方块** → 需要带精准采集+时运的 JSON（参考已有矿石模板）
+4. **有 TileEntity 的方块** → 必须通过 `getDrops()` 自行处理掉落逻辑
+
+**自掉落战利品表模板：**
+```json
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [{"condition": "minecraft:survives_explosion"}],
+      "entries": [{"type": "minecraft:item", "name": "pasterdream:<block_id>"}],
+      "rolls": 1.0
+    }
+  ]
+}
+```

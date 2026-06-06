@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 /**
@@ -39,6 +40,14 @@ public class PDClientEvents {
     private static final ResourceKey<Biome> BIOME_DYEDREAM_3 = ResourceKey.create(
             net.minecraft.core.registries.Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_3")
+    );
+    private static final ResourceKey<Biome> BIOME_DYEDREAM_DEEP_OCEAN = ResourceKey.create(
+            net.minecraft.core.registries.Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_deep_ocean")
+    );
+    private static final ResourceKey<Biome> BIOME_DYEDREAM_MUSHROOM_PLAINS = ResourceKey.create(
+            net.minecraft.core.registries.Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_mushroom_plains")
     );
 
     private static final ResourceLocation DYEDREAM_LEAVES_ID = ResourceLocation.fromNamespaceAndPath(
@@ -78,6 +87,9 @@ public class PDClientEvents {
         // 驱动 ModMusicManager tick（BGM 切换、淡入淡出、玩家状态检测）
         ModMusicManager.getInstance().tick();
 
+        // 暂停时不生成环境粒子，避免解冻时一瞬间爆出大量粒子
+        if (mc.isPaused()) return;
+
         // 仅在染梦维度中处理环境粒子
         if (!PDDimensions.isDyedreamWorld(mc.player.level())) return;
 
@@ -95,6 +107,10 @@ public class PDClientEvents {
             spawnSilver(mc);
         } else if (BIOME_DYEDREAM_3.equals(currentBiome)) {
             spawnSnowflakeGround(mc);
+        } else if (BIOME_DYEDREAM_DEEP_OCEAN.equals(currentBiome)) {
+            spawnDeepOceanBioluminescence(mc);
+        } else if (BIOME_DYEDREAM_MUSHROOM_PLAINS.equals(currentBiome)) {
+            spawnMushroomSpores(mc);
         }
 
         spawnTreeLeaves(mc);
@@ -216,6 +232,7 @@ public class PDClientEvents {
      * 生成地面雪花粒子（温暖海洋）
      * <p>
      * 蓝色雪花星芒在地面/水面附近生成，向上飘散。
+     * 优化说明：使用玩家 Y 坐标 - 2 作为粗略地面位置，避免昂贵的 getHeight 查询。
      */
     private static void spawnSnowflakeGround(Minecraft mc) {
         var random = mc.player.getRandom();
@@ -227,6 +244,8 @@ public class PDClientEvents {
 
         SimpleParticleType type = (SimpleParticleType) PDParticles.SNOWFLAKE_0_PARTICLE.holder().get();
 
+        double playerFloorY = mc.player.getY() - 2.0;
+
         int count = 1 + random.nextInt(3);
         for (int i = 0; i < count; i++) {
             double angle = random.nextDouble() * Math.PI * 2;
@@ -234,13 +253,11 @@ public class PDClientEvents {
 
             double spawnX = mc.player.getX() + driftX + Math.cos(angle) * dist;
             double spawnZ = mc.player.getZ() + driftZ + Math.sin(angle) * dist;
-            int floorY = mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,
-                    (int) spawnX, (int) spawnZ);
 
             mc.level.addParticle(
                     type,
                     spawnX,
-                    floorY + 0.5 + random.nextDouble() * 1.5,
+                    playerFloorY + 0.5 + random.nextDouble() * 1.5,
                     spawnZ,
                     (random.nextDouble() - 0.5) * 0.006,
                     0.005 + random.nextDouble() * 0.01,
@@ -250,10 +267,82 @@ public class PDClientEvents {
     }
 
     /**
+     * 生成深海荧光羽毛（晶莹深海）
+     * <p>
+     * 白色荧光羽毛粒子从海面之上缓缓上浮，模拟发光浮游生物/深海羽毛水母
+     * 在海面释放荧光孢子的效果。粒子使用 feather_white_particle 类型，
+     * 12帧动画呈现羽毛飘逸感，夜晚自动切换为发光渲染。
+     */
+    private static void spawnDeepOceanBioluminescence(Minecraft mc) {
+        var random = mc.player.getRandom();
+        if (random.nextFloat() >= 0.06f) return;
+
+        long gameTime = mc.level.getGameTime();
+        double driftX = Math.sin(gameTime * DRIFT_SPEED * 0.5) * DRIFT_RADIUS;
+        double driftZ = Math.cos(gameTime * DRIFT_SPEED * 1.1 + 1.8) * DRIFT_RADIUS;
+
+        SimpleParticleType type = (SimpleParticleType) PDParticles.FEATHER_WHITE_PARTICLE.holder().get();
+
+        int seaLevel = mc.level.getSeaLevel();
+
+        int count = 1 + random.nextInt(2);
+        for (int i = 0; i < count; i++) {
+            double angle = random.nextDouble() * Math.PI * 2;
+            double dist = 3.0 + random.nextDouble() * 12.0;
+
+            mc.level.addParticle(
+                    type,
+                    mc.player.getX() + driftX + Math.cos(angle) * dist,
+                    seaLevel - 1.0 + random.nextDouble() * 7.0,
+                    mc.player.getZ() + driftZ + Math.sin(angle) * dist,
+                    (random.nextDouble() - 0.5) * 0.004,
+                    0.008 + random.nextDouble() * 0.012,
+                    (random.nextDouble() - 0.5) * 0.004
+            );
+        }
+    }
+
+    /**
+     * 生成蘑菇孢子粉尘（蘑菇平原）
+     * <p>
+     * 暖金色孢子粒子从地面缓缓飘散，模拟夜晚发光的魔法孢子粉尘效果。
+     * 粒子使用 dyedream_0_particle 类型，夜晚自动切换为发光渲染，
+     * 伴随大小脉冲呼吸效果和横向风漂运动。
+     */
+    private static void spawnMushroomSpores(Minecraft mc) {
+        var random = mc.player.getRandom();
+        if (random.nextFloat() >= 0.07f) return;
+
+        long gameTime = mc.level.getGameTime();
+        double driftX = Math.sin(gameTime * DRIFT_SPEED * 0.7) * DRIFT_RADIUS;
+        double driftZ = Math.cos(gameTime * DRIFT_SPEED * 0.9 + 1.2) * DRIFT_RADIUS;
+
+        SimpleParticleType type = (SimpleParticleType) PDParticles.DYEDREAM_0_PARTICLE.holder().get();
+
+        double playerFloorY = mc.player.getY() - 2.0;
+
+        int count = 1 + random.nextInt(2);
+        for (int i = 0; i < count; i++) {
+            double angle = random.nextDouble() * Math.PI * 2;
+            double dist = 2.0 + random.nextDouble() * 14.0;
+
+            mc.level.addParticle(
+                    type,
+                    mc.player.getX() + driftX + Math.cos(angle) * dist,
+                    playerFloorY + 0.5 + random.nextDouble() * 4.0,
+                    mc.player.getZ() + driftZ + Math.sin(angle) * dist,
+                    (random.nextDouble() - 0.5) * 0.003,
+                    -0.005 - random.nextDouble() * 0.008,
+                    (random.nextDouble() - 0.5) * 0.003
+            );
+        }
+    }
+
+    /**
      * 树冠落叶系统
      * <p>
-     * 每 4 tick 扫描玩家周围 10 个随机位置，检测到染梦树叶或樱花树
-     * 后在其下方生成飘落的叶片粒子。
+     * 每 4 tick 在玩家周围扫描树叶方块，检测到后生成飘落的叶片粒子。
+     * 优化说明：减少每次扫描数量，添加已加载区块检测以避免触发 chunk 加载。
      */
     private static void spawnTreeLeaves(Minecraft mc) {
         var random = mc.player.getRandom();
@@ -262,12 +351,15 @@ public class PDClientEvents {
 
         int playerY = mc.player.blockPosition().getY();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             double scanX = mc.player.getX() + (random.nextDouble() - 0.5) * 24.0;
             double scanZ = mc.player.getZ() + (random.nextDouble() - 0.5) * 24.0;
             int scanY = playerY + 3 + random.nextInt(10);
 
             BlockPos checkPos = BlockPos.containing(scanX, scanY, scanZ);
+
+            if (!isChunkLoaded(mc, checkPos)) continue;
+
             BlockState blockState = mc.level.getBlockState(checkPos);
 
             if (isLeafBlock(blockState)) {
@@ -287,6 +379,13 @@ public class PDClientEvents {
                 );
             }
         }
+    }
+
+    /**
+     * 检查指定位置的区块是否已加载，避免触发 chunk 加载导致的卡顿
+     */
+    private static boolean isChunkLoaded(Minecraft mc, BlockPos pos) {
+        return mc.level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4);
     }
 
     /**

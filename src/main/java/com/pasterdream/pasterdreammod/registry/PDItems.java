@@ -8,6 +8,7 @@ import com.pasterdream.pasterdreammod.item.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
@@ -58,6 +59,29 @@ public class PDItems {
     public static final DeferredItem<ShadowChestDisplayItem> SHADOW_CHEST = ITEMS.register("shadow_chest",
             () -> new ShadowChestDisplayItem(new Item.Properties()));
 
+    // ==================== 梦境炼药锅物品 ====================
+
+    /**
+     * 梦境炼药锅物品 (dream_cauldron)
+     * 使用 DreamCauldronDisplayItem 实现手持 3D 渲染
+     */
+    public static final DeferredItem<DreamCauldronDisplayItem> DREAM_CAULDRON = ITEMS.register("dream_cauldron",
+            () -> new DreamCauldronDisplayItem(new Item.Properties()));
+
+    // ==================== 融梦水晶箱物品 ====================
+
+    /**
+     * 融梦水晶箱物品（关闭状态）- 使用 MeltdreamChestDisplayItem 实现手持 3D 渲染
+     */
+    public static final DeferredItem<MeltdreamChestDisplayItem> MELTDREAM_CHEST = ITEMS.register("meltdream_chest",
+            () -> new MeltdreamChestDisplayItem(new Item.Properties()));
+
+    /**
+     * 融梦水晶箱（打开状态）- 简单 BlockItem，无需 GeckoLib
+     */
+    public static final DeferredItem<BlockItem> MELTDREAM_CHEST_OPEN = ITEMS.registerSimpleBlockItem("meltdream_chest_open",
+            PDBlocks.MELTDREAM_CHEST_OPEN);
+
     // ==================== 染梦世界方块物品 ====================
 
     public static final DeferredItem<BlockItem> DYEDREAM_BLOCK = ITEMS.registerSimpleBlockItem("dyedream_block", PDBlocks.DYEDREAM_BLOCK);
@@ -79,6 +103,9 @@ public class PDItems {
     public static final DeferredItem<BlockItem> DYEDREAMQUARTZ_ORE = ITEMS.registerSimpleBlockItem("dyedreamquartz_ore", PDBlocks.DYEDREAMQUARTZ_ORE);
     public static final DeferredItem<BlockItem> DYEDREAMDUST_ORE = ITEMS.registerSimpleBlockItem("dyedreamdust_ore", PDBlocks.DYEDREAMDUST_ORE);
     public static final DeferredItem<BlockItem> AMBER_CANDY_ORE = ITEMS.registerSimpleBlockItem("amber_candy_ore", PDBlocks.AMBER_CANDY_ORE);
+    public static final DeferredItem<BlockItem> TITANIUM_ORE = ITEMS.registerSimpleBlockItem("titanium_ore", PDBlocks.TITANIUM_ORE);
+    public static final DeferredItem<BlockItem> WINDRUNNER_CRYSTAL_ORE = ITEMS.registerSimpleBlockItem("windrunner_crystal_ore", PDBlocks.WINDRUNNER_CRYSTAL_ORE);
+    public static final DeferredItem<BlockItem> CONGEAL_WIND_ORE = ITEMS.registerSimpleBlockItem("congeal_wind_ore", PDBlocks.CONGEAL_WIND_ORE);
     public static final DeferredItem<BlockItem> CARVE_DYEDREAM_GLASS = ITEMS.registerSimpleBlockItem("carve_dyedream_glass", PDBlocks.CARVE_DYEDREAM_GLASS);
     public static final DeferredItem<BlockItem> GOLD_CARVE_DYEDREAM_GLASS = ITEMS.registerSimpleBlockItem("gold_carve_dyedream_glass", PDBlocks.GOLD_CARVE_DYEDREAM_GLASS);
     public static final DeferredItem<BlockItem> DYEDREAM_GRASS = ITEMS.registerSimpleBlockItem("dyedream_grass", PDBlocks.DYEDREAM_GRASS);
@@ -105,6 +132,39 @@ public class PDItems {
     public static final DeferredItem<BlockItem> CARVE_DYEDREAM_GLASSPANE = ITEMS.registerSimpleBlockItem("carve_dyedream_glasspane", PDBlocks.CARVE_DYEDREAM_GLASSPANE);
     public static final DeferredItem<BlockItem> GOLD_CARVE_DYEDREAM_GLASSPANE = ITEMS.registerSimpleBlockItem("gold_carve_dyedream_glasspane", PDBlocks.GOLD_CARVE_DYEDREAM_GLASSPANE);
     public static final DeferredItem<BlockItem> DYEDREAM_LARTERN = ITEMS.registerSimpleBlockItem("dyedream_lartern", PDBlocks.DYEDREAM_LARTERN);
+
+    // ==================== Phase 1: 移植方块物品 ====================
+
+    public static final DeferredItem<BlockItem> TITANIUM_BLOCK = ITEMS.registerSimpleBlockItem("titanium_block", PDBlocks.TITANIUM_BLOCK);
+    public static final DeferredItem<BlockItem> RAW_TITANIUM_BLOCK = ITEMS.registerSimpleBlockItem("raw_titanium_block", PDBlocks.RAW_TITANIUM_BLOCK);
+    public static final DeferredItem<BlockItem> MOLTENGOLD_BLOCK = ITEMS.registerSimpleBlockItem("moltengold_block", PDBlocks.MOLTENGOLD_BLOCK);
+    public static final DeferredItem<BlockItem> BLACKMETAL_BLOCK = ITEMS.registerSimpleBlockItem("blackmetal_block", PDBlocks.BLACKMETAL_BLOCK);
+    public static final DeferredItem<BlockItem> CHARGED_AMETHYST_BLOCK = ITEMS.registerSimpleBlockItem("charged_amethyst_block", PDBlocks.CHARGED_AMETHYST_BLOCK);
+    public static final DeferredItem<BlockItem> WIND_IRON_BLOCK = ITEMS.registerSimpleBlockItem("wind_iron_block", PDBlocks.WIND_IRON_BLOCK);
+    public static final DeferredItem<BlockItem> DEEPSLATE_TITANIUM_ORE = ITEMS.registerSimpleBlockItem("deepslate_titanium_ore", PDBlocks.DEEPSLATE_TITANIUM_ORE);
+    public static final DeferredItem<BlockItem> MOLTENGOLD_ORE = ITEMS.registerSimpleBlockItem("moltengold_ore", PDBlocks.MOLTENGOLD_ORE);
+    public static final DeferredItem<BlockItem> SOUL_ORE = ITEMS.registerSimpleBlockItem("soul_ore", PDBlocks.SOUL_ORE);
+    public static final DeferredItem<BlockItem> PEBBLE_0 = ITEMS.registerSimpleBlockItem("pebble_0", PDBlocks.PEBBLE_0);
+    public static final DeferredItem<BlockItem> SHADOW_LIGHT_0 = ITEMS.registerSimpleBlockItem("shadow_light_0", PDBlocks.SHADOW_LIGHT_0);
+    public static final DeferredItem<BlockItem> VINE_0 = ITEMS.registerSimpleBlockItem("vine_0", PDBlocks.VINE_0);
+    public static final DeferredItem<BlockItem> GOLDENROD = ITEMS.registerSimpleBlockItem("goldenrod", PDBlocks.GOLDENROD);
+    public static final DeferredItem<BlockItem> CROP_0A = ITEMS.registerSimpleBlockItem("crop_0a", PDBlocks.CROP_0A);
+    public static final DeferredItem<BlockItem> CROP_1A = ITEMS.registerSimpleBlockItem("crop_1a", PDBlocks.CROP_1A);
+    public static final DeferredItem<BlockItem> CROP_2A = ITEMS.registerSimpleBlockItem("crop_2a", PDBlocks.CROP_2A);
+    public static final DeferredItem<BlockItem> CROP_3A = ITEMS.registerSimpleBlockItem("crop_3a", PDBlocks.CROP_3A);
+    public static final DeferredItem<BlockItem> CROP_4A = ITEMS.registerSimpleBlockItem("crop_4a", PDBlocks.CROP_4A);
+    public static final DeferredItem<BlockItem> DREAM_TRAIN_STRUCTURE = ITEMS.registerSimpleBlockItem("dream_train_structure", PDBlocks.DREAM_TRAIN_STRUCTURE);
+
+    // ==================== 钙华变体补充方块物品 ====================
+
+    public static final DeferredItem<BlockItem> POLISHED_CALCITE = ITEMS.registerSimpleBlockItem("polished_calcite", PDBlocks.POLISHED_CALCITE);
+    public static final DeferredItem<BlockItem> CALCITE_TILES = ITEMS.registerSimpleBlockItem("calcite_tiles", PDBlocks.CALCITE_TILES);
+    public static final DeferredItem<BlockItem> CALCITE_TILES_STAIRS = ITEMS.registerSimpleBlockItem("calcite_tiles_stairs", PDBlocks.CALCITE_TILES_STAIRS);
+    public static final DeferredItem<BlockItem> CALCITE_TILES_SLAB = ITEMS.registerSimpleBlockItem("calcite_tiles_slab", PDBlocks.CALCITE_TILES_SLAB);
+    public static final DeferredItem<BlockItem> POLISHED_CALCITE_SLAB = ITEMS.registerSimpleBlockItem("polished_calcite_slab", PDBlocks.POLISHED_CALCITE_SLAB);
+    public static final DeferredItem<BlockItem> POLISHED_CALCITE_WALL = ITEMS.registerSimpleBlockItem("polished_calcite_wall", PDBlocks.POLISHED_CALCITE_WALL);
+    public static final DeferredItem<BlockItem> CALCITE_TILES_WALL = ITEMS.registerSimpleBlockItem("calcite_tiles_wall", PDBlocks.CALCITE_TILES_WALL);
+    public static final DeferredItem<BlockItem> POLISHED_CALCITE_STAIRS = ITEMS.registerSimpleBlockItem("polished_calcite_stairs", PDBlocks.POLISHED_CALCITE_STAIRS);
 
     // ==================== 刷怪蛋 ====================
 
@@ -215,6 +275,21 @@ public class PDItems {
     public static final DeferredItem<Item> RUST_BLACK_METAL_GRAIN = ITEMS.registerSimpleItem("rust_black_metal_grain");
     public static final DeferredItem<Item> RYESEED = ITEMS.registerSimpleItem("ryeseed");
     public static final DeferredItem<Item> SALT = ITEMS.registerSimpleItem("salt");
+
+    // ==================== Phase 2: 移植特殊物品 ====================
+
+    public static final DeferredItem<JungleSporeItem> JUNGLE_SPORE = ITEMS.registerItem("jungle_spore", JungleSporeItem::new,
+            new Item.Properties().food(JungleSporeItem.createFoodProperties()));
+
+    public static final DeferredItem<MeltdreamLiquidItem> MELTDREAM_LIQUID_BUCKET = ITEMS.registerItem("meltdream_liquid_bucket", MeltdreamLiquidItem::new,
+            new Item.Properties().stacksTo(1));
+
+    public static final DeferredItem<PinkeggItem> PINKEGG = ITEMS.registerItem("pinkegg", PinkeggItem::new,
+            new Item.Properties().stacksTo(16));
+
+    public static final DeferredItem<PliersItem> PLIERS = ITEMS.registerItem("pliers", PliersItem::new,
+            new Item.Properties().durability(160));
+
     public static final DeferredItem<Item> SCULK_HEART = ITEMS.registerSimpleItem("sculk_heart");
     public static final DeferredItem<Item> SCULK_UPGRADE = ITEMS.registerSimpleItem("sculk_upgrade");
     public static final DeferredItem<Item> SHADOW_DUNGEON_KEY = ITEMS.registerSimpleItem("shadow_dungeon_key");
@@ -914,12 +989,28 @@ public class PDItems {
                     () -> new PastedreamMusicDiscItem(PasterDreamMod.MOD_ID, "aaroncos_disc", "aaroncos"));
 
     /**
+     * 染梦世界唱片 (dyedream_world_disc)
+     * PasterDream - DyeDream World，使用 dyedream_world.ogg，时长 120 秒，纹理 music_disc_sweetdream
+     */
+    public static final DeferredItem<PastedreamMusicDiscItem> DYEDREAM_WORLD_DISC =
+            ItemMigrationAPI.registerCustom("dyedream_world_disc",
+                    () -> new PastedreamMusicDiscItem(PasterDreamMod.MOD_ID, "dyedream_world_disc", "dyedream_world"));
+
+    /**
      * 风之旅途唱片 (wind_journey_disc)
      * PasterDream - 风之旅途，时长 4240 tick（约 212 秒）
      */
     public static final DeferredItem<PastedreamMusicDiscItem> WIND_JOURNEY_DISC =
             ItemMigrationAPI.registerCustom("wind_journey_disc",
                     () -> new PastedreamMusicDiscItem(PasterDreamMod.MOD_ID, "wind_journey_disc", "wind_journey"));
+
+    /**
+     * 风之旅途·其二唱片 (wind_journey_1_disc)
+     * PasterDream - 风之旅途·其二，使用 wind_journey1.ogg，时长 130 秒
+     */
+    public static final DeferredItem<PastedreamMusicDiscItem> WIND_JOURNEY_1_DISC =
+            ItemMigrationAPI.registerCustom("wind_journey_1_disc",
+                    () -> new PastedreamMusicDiscItem(PasterDreamMod.MOD_ID, "wind_journey_1_disc", "wind_journey1"));
 
     // ==================== 染梦群系背景音乐唱片（使用 API registerCustom 注册） ====================
 
@@ -958,11 +1049,19 @@ public class PDItems {
     // 标记唱片迁移状态
     static {
         ItemMigrationAPI.markMigrated(MigrationCategory.MUSIC_DISC,
-                "sweetdream_disc", "snowfalldream_disc", "aaroncos_disc", "wind_journey_disc",
+                "sweetdream_disc", "snowfalldream_disc", "aaroncos_disc", "dyedream_world_disc",
+                "wind_journey_disc", "wind_journey_1_disc",
                 "dream_meadow_disc", "dream_heath_disc", "dream_taiga_disc", "dream_delta_disc");
     }
 
     // ==================== 自定义模型方块 BlockItem ====================
+
+    /**
+     * 寻梦者的永恒书卷 (the_endless_book_of_dream_seekers)
+     * 使用 TheEndlessBookOfDreamSeekersDisplayItem 实现手持 3D 渲染
+     */
+    public static final DeferredItem<TheEndlessBookOfDreamSeekersDisplayItem> THE_ENDLESS_BOOK_OF_DREAM_SEEKERS = ITEMS.register("the_endless_book_of_dream_seekers",
+            () -> new TheEndlessBookOfDreamSeekersDisplayItem(new Item.Properties()));
 
     public static final DeferredItem<BlockItem> DYEDREAM_PLANKS_PANE = ITEMS.registerSimpleBlockItem("dyedream_planks_pane", PDBlocks.DYEDREAM_PLANKS_PANE);
     public static final DeferredItem<BlockItem> PINKAGARIC_0 = ITEMS.registerSimpleBlockItem("pinkagaric_0", PDBlocks.PINKAGARIC_0);
@@ -1017,6 +1116,239 @@ public class PDItems {
     public static final DeferredItem<BlockItem> GRASS_13 = ITEMS.registerSimpleBlockItem("grass_13", PDBlocks.GRASS_13);
     public static final DeferredItem<BlockItem> GRASS_14 = ITEMS.registerSimpleBlockItem("grass_14", PDBlocks.GRASS_14);
     public static final DeferredItem<BlockItem> GRASS_15 = ITEMS.registerSimpleBlockItem("grass_15", PDBlocks.GRASS_15);
+
+    // ==================== 调试结构法杖 ====================
+
+    /**
+     * 调试法杖 - 染梦列车
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_DREAM_TRAIN =
+            ITEMS.register("debug_wand_dream_train",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "dream_train"));
+
+    /**
+     * 调试法杖 - 巨型染梦树
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_WORLDTREE =
+            ITEMS.register("debug_wand_worldtree",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "dyedream_worldtree_true"));
+
+    /**
+     * 调试法杖 - 粉红菇屋 0
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_PINKAGARIC_0 =
+            ITEMS.register("debug_wand_pinkagaric_0",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "pinkagaric_house_0"));
+
+    /**
+     * 调试法杖 - 粉红菇屋 1
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_PINKAGARIC_1 =
+            ITEMS.register("debug_wand_pinkagaric_1",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "pinkagaric_house_1"));
+
+    /**
+     * 调试法杖 - 粉红菇屋 2
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_PINKAGARIC_2 =
+            ITEMS.register("debug_wand_pinkagaric_2",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "pinkagaric_house_2"));
+
+    /**
+     * 调试法杖 - 粉红菇屋 3
+     */
+    public static final DeferredItem<DebugStructureWandItem> DEBUG_WAND_PINKAGARIC_3 =
+            ITEMS.register("debug_wand_pinkagaric_3",
+                    () -> new DebugStructureWandItem(new Item.Properties().stacksTo(1), "pinkagaric_house_3"));
+
+    /**
+     * 调试法杖 - 云泡泡
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_CLOUD_BUBBLE =
+            ITEMS.register("debug_wand_cloud_bubble",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "cloud_bubble"));
+
+    /**
+     * 调试法杖 - 浮冰堆
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_FLOATING_ICE_MOUND =
+            ITEMS.register("debug_wand_floating_ice_mound",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "floating_ice_mound"));
+
+    /**
+     * 调试法杖 - 冰拱门
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_ARCH =
+            ITEMS.register("debug_wand_ice_arch",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_arch"));
+
+    /**
+     * 调试法杖 - 冰拱门(毁)
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_ARCH_RUINED =
+            ITEMS.register("debug_wand_ice_arch_ruined",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_arch_ruined"));
+
+    /**
+     * 调试法杖 - 染梦冰柱
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_DYEDREAM_ICE_PILLAR =
+            ITEMS.register("debug_wand_dyedream_ice_pillar",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "dyedream_ice_pillar"));
+
+    /**
+     * 调试法杖 - 冰晶丛
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_CRYSTAL_CLUSTER =
+            ITEMS.register("debug_wand_ice_crystal_cluster",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_crystal_cluster"));
+
+    /**
+     * 调试法杖 - 冰霜尖刺
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_FROST_SPIKE =
+            ITEMS.register("debug_wand_frost_spike",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "frost_spike"));
+
+    /**
+     * 调试法杖 - 冰门
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_GATE =
+            ITEMS.register("debug_wand_ice_gate",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_gate"));
+
+    /**
+     * 调试法杖 - 冰刺
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_SPIKE =
+            ITEMS.register("debug_wand_ice_spike",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_spike"));
+
+    /**
+     * 调试法杖 - 冰晶花园
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_CRYSTAL_GARDEN =
+            ITEMS.register("debug_wand_ice_crystal_garden",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_crystal_garden"));
+
+    /**
+     * 调试法杖 - 冰晶刺
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_CRYSTAL_SPIKE =
+            ITEMS.register("debug_wand_ice_crystal_spike",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_crystal_spike"));
+
+    /**
+     * 调试法杖 - 冰柱
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ICE_PILLAR =
+            ITEMS.register("debug_wand_ice_pillar",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "ice_pillar"));
+
+    /**
+     * 调试法杖 - 水下冰刺
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_UNDERWATER_ICE_SPIKE =
+            ITEMS.register("debug_wand_underwater_ice_spike",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "underwater_ice_spike"));
+
+    /**
+     * 调试法杖 - 海冰丘
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_SEA_ICE_MOUND =
+            ITEMS.register("debug_wand_sea_ice_mound",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "sea_ice_mound"));
+
+    /**
+     * 调试法杖 - 珊瑚礁
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_CORAL_REEF =
+            ITEMS.register("debug_wand_coral_reef",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_coral_reef"));
+
+    /**
+     * 调试法杖 - 粉色珊瑚礁
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_CORAL_REEF_PINK =
+            ITEMS.register("debug_wand_coral_reef_pink",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_coral_reef_pink"));
+
+    /**
+     * 调试法杖 - 巨型蘑菇
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_MEGA_MUSHROOM =
+            ITEMS.register("debug_wand_mega_mushroom",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "mega_mushroom"));
+
+    /**
+     * 调试法杖 - 巨型方解石柱
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_MEGA_CALCITE_PILLAR =
+            ITEMS.register("debug_wand_mega_calcite_pillar",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "mega_calcite_pillar"));
+
+    /**
+     * 调试法杖 - 粉红菇簇
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_PINKAGARIC_CLUSTER =
+            ITEMS.register("debug_wand_pinkagaric_cluster",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "pinkagaric_cluster"));
+
+    /**
+     * 调试法杖 - 方解石柱
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_CALCITE_PILLAR =
+            ITEMS.register("debug_wand_calcite_pillar",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "calcite_pillar"));
+
+    /**
+     * 调试法杖 - 染梦海草
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_SEAGRASS =
+            ITEMS.register("debug_wand_seagrass",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_seagrass"));
+
+    /**
+     * 调试法杖 - 染梦草
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_GRASS =
+            ITEMS.register("debug_wand_grass",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_grass"));
+
+    /**
+     * 调试法杖 - 染梦芽
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_BUDS =
+            ITEMS.register("debug_wand_buds",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_buds"));
+
+    /**
+     * 调试法杖 - 染梦莲
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_LOTUS =
+            ITEMS.register("debug_wand_lotus",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_lotus"));
+
+    /**
+     * 调试法杖 - 荷叶
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_LILY_PAD =
+            ITEMS.register("debug_wand_lily_pad",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_lily_pad"));
+
+    /**
+     * 调试法杖 - 粉红菇
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_PINKAGARIC =
+            ITEMS.register("debug_wand_pinkagaric",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_pinkagaric_0"));
+
+    /**
+     * 调试法杖 - 染梦岩石
+     */
+    public static final DeferredItem<DebugDecorWandItem> DEBUG_WAND_ROCK =
+            ITEMS.register("debug_wand_rock",
+                    () -> new DebugDecorWandItem(new Item.Properties().stacksTo(1), "patch_dyedream_rock"));
 
     /**
      * 静态初始化块 —— 输出所有物品注册的统计信息

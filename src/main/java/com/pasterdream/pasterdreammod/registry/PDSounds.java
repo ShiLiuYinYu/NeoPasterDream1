@@ -117,6 +117,8 @@ public class PDSounds {
         registerDimensionMusic("dream_heath");
         registerDimensionMusic("dream_taiga");
         registerDimensionMusic("dream_delta");
+        registerDimensionMusic("sweetdream_music");
+        registerDimensionMusic("snowfall_dream_music");
     }
 
     /**

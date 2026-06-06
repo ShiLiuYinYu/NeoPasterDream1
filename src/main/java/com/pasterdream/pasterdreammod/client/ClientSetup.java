@@ -7,11 +7,18 @@ import com.pasterdream.pasterdreammod.api.particle.ParticleAPI;
 import com.pasterdream.pasterdreammod.client.model.Modelslime;
 import com.pasterdream.pasterdreammod.client.particle.*;
 import com.pasterdream.pasterdreammod.client.renderer.block.DreamAccumulatorBlockRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.block.DreamCauldronBlockRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.block.LifeCrystalBlockRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.block.MeltdreamChestBlockRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.block.ShadowChestBlockRenderer;
+import com.pasterdream.pasterdreammod.client.renderer.block.TheEndlessBookOfDreamSeekersBlockRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.entity.PinkSlimeRenderer;
 import com.pasterdream.pasterdreammod.client.renderer.entity.ShadowGolemRenderer;
+import com.pasterdream.pasterdreammod.client.screen.DreamCauldronScreen;
+import com.pasterdream.pasterdreammod.client.screen.DyedreamDeskScreen;
+import com.pasterdream.pasterdreammod.client.screen.MeltdreamChestScreen;
 import com.pasterdream.pasterdreammod.client.screen.ShadowChestScreen;
+import com.pasterdream.pasterdreammod.client.screen.TheEndlessBookOfDreamSeekersScreen;
 import com.pasterdream.pasterdreammod.registry.PDBlockEntities;
 import com.pasterdream.pasterdreammod.registry.PDEntities;
 import com.pasterdream.pasterdreammod.registry.PDMenus;
@@ -68,6 +75,27 @@ public class ClientSetup {
         );
         PasterDreamMod.LOGGER.info("[ClientSetup] 注册方块实体渲染器: shadow_chest → ShadowChestBlockRenderer");
 
+        // 注册梦境炼药锅方块实体渲染器
+        event.registerBlockEntityRenderer(
+                PDBlockEntities.DREAM_CAULDRON.get(),
+                DreamCauldronBlockRenderer::new
+        );
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册方块实体渲染器: dream_cauldron → DreamCauldronBlockRenderer");
+
+        // 注册融梦水晶箱方块实体渲染器
+        event.registerBlockEntityRenderer(
+                PDBlockEntities.MELTDREAM_CHEST.get(),
+                MeltdreamChestBlockRenderer::new
+        );
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册方块实体渲染器: meltdream_chest → MeltdreamChestBlockRenderer");
+
+        // 注册寻梦者的永恒书卷方块实体渲染器
+        event.registerBlockEntityRenderer(
+                PDBlockEntities.THE_ENDLESS_BOOK_OF_DREAM_SEEKERS.get(),
+                TheEndlessBookOfDreamSeekersBlockRenderer::new
+        );
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册方块实体渲染器: the_endless_book_of_dream_seekers → TheEndlessBookOfDreamSeekersBlockRenderer");
+
         // 注册暗影魔像实体渲染器
         EntityAPI.registerRenderer(event, "shadow_golem", ShadowGolemRenderer::new);
         PasterDreamMod.LOGGER.info("[ClientSetup] 注册实体渲染器: shadow_golem → ShadowGolemRenderer （GeckoLib）");
@@ -99,6 +127,18 @@ public class ClientSetup {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(PDMenus.SHADOW_CHEST.get(), ShadowChestScreen::new);
         PasterDreamMod.LOGGER.info("[ClientSetup] 注册 GUI 屏幕: shadow_chest → ShadowChestScreen");
+
+        event.register(PDMenus.DYEDREAM_DESK.get(), DyedreamDeskScreen::new);
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册 GUI 屏幕: dyedream_desk → DyedreamDeskScreen");
+
+        event.register(PDMenus.MELTDREAM_CHEST.get(), MeltdreamChestScreen::new);
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册 GUI 屏幕: meltdream_chest → MeltdreamChestScreen");
+
+        event.register(PDMenus.DREAM_CAULDRON.get(), DreamCauldronScreen::new);
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册 GUI 屏幕: dream_cauldron → DreamCauldronScreen");
+
+        event.register(PDMenus.THE_ENDLESS_BOOK_OF_DREAM_SEEKERS.get(), TheEndlessBookOfDreamSeekersScreen::new);
+        PasterDreamMod.LOGGER.info("[ClientSetup] 注册 GUI 屏幕: the_endless_book_of_dream_seekers → TheEndlessBookOfDreamSeekersScreen");
     }
 
     /**
@@ -121,11 +161,13 @@ public class ClientSetup {
         ParticleAPI.registerProviderSprite(event, "crack_0_particle", CrackParticle.Provider::new);
         ParticleAPI.registerProviderSprite(event, "white_star_particle", WhiteStarParticle.Provider::new);
         ParticleAPI.registerProviderSprite(event, "snowflake_0_particle", SnowflakeParticle.Provider::new);
+        ParticleAPI.registerProviderSprite(event, "feather_white_particle", FeatherWhiteParticle.Provider::new);
+        ParticleAPI.registerProviderSprite(event, "dyedream_0_particle", DyedreamParticle.Provider::new);
 
-        PasterDreamMod.LOGGER.info("[ClientSetup] 粒子提供器注册完成，共 9 个粒子类型");
+        PasterDreamMod.LOGGER.info("[ClientSetup] 粒子提供器注册完成，共 11 个粒子类型");
     }
 
-    /** 染梦维度四个群系的 ResourceKey 常量（与 PDClientEvents 保持一致） */
+    /** 染梦维度群系的 ResourceKey 常量（与 PDClientEvents 保持一致） */
     private static final ResourceKey<Biome> BIOME_DYEDREAM_0 = ResourceKey.create(
             Registries.BIOME, ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_0"));
     private static final ResourceKey<Biome> BIOME_DYEDREAM_1 = ResourceKey.create(
@@ -134,6 +176,10 @@ public class ClientSetup {
             Registries.BIOME, ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_2"));
     private static final ResourceKey<Biome> BIOME_DYEDREAM_3 = ResourceKey.create(
             Registries.BIOME, ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_3"));
+    private static final ResourceKey<Biome> BIOME_DYEDREAM_DEEP_OCEAN = ResourceKey.create(
+            Registries.BIOME, ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_deep_ocean"));
+    private static final ResourceKey<Biome> BIOME_DYEDREAM_MUSHROOM_PLAINS = ResourceKey.create(
+            Registries.BIOME, ResourceLocation.fromNamespaceAndPath(PasterDreamMod.MOD_ID, "biome_dyedream_mushroom_plains"));
 
     /**
      * 在三色间插值（白天色 → 黄昏色 → 夜色）
@@ -199,10 +245,20 @@ public class ClientSetup {
                             nightColor = new Vec3(0.10, 0.16, 0.36);
                         } else if (BIOME_DYEDREAM_3.equals(biome)) {
                             // 温暖海洋 — 海蓝薄雾
-                            dayColor = new Vec3(0.64, 0.83, 0.90);
-                            sunsetColor = new Vec3(0.83, 0.64, 0.64);
-                            nightColor = new Vec3(0.04, 0.16, 0.23);
-                        } else {
+                        dayColor = new Vec3(0.64, 0.83, 0.90);
+                        sunsetColor = new Vec3(0.83, 0.64, 0.64);
+                        nightColor = new Vec3(0.04, 0.16, 0.23);
+                    } else if (BIOME_DYEDREAM_DEEP_OCEAN.equals(biome)) {
+                        // 晶莹深海 — 紫晶微光
+                        dayColor = new Vec3(0.76, 0.64, 0.90);
+                        sunsetColor = new Vec3(0.83, 0.53, 0.74);
+                        nightColor = new Vec3(0.12, 0.04, 0.28);
+                    } else if (BIOME_DYEDREAM_MUSHROOM_PLAINS.equals(biome)) {
+                        // 蘑菇平原 — 暖金孢子雾
+                        dayColor = new Vec3(1.0, 0.82, 0.64);
+                        sunsetColor = new Vec3(0.90, 0.64, 0.45);
+                        nightColor = new Vec3(0.28, 0.16, 0.04);
+                    } else {
                             // 后备：温暖平原色
                             dayColor = new Vec3(1.0, 0.71, 0.85);
                             sunsetColor = new Vec3(1.0, 0.56, 0.64);
