@@ -53,7 +53,11 @@ public class PDStructures {
      * <p>
      * 注意：新旧两种方式均可使用。推荐通过 {@link RuinAPI#REGISTRY} 统一注册，
      * 现有 {@code STRUCTURE_TYPES} 保留用于手动注册兼容。
+     *
+     * @deprecated 此独立注册器仅为过渡期兼容保留，将在下个主版本移除。
+     *             请使用 {@link RuinAPI#REGISTRY}。
      */
+    @Deprecated(forRemoval = true, since = "0.0.3.2")
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(
             Registries.STRUCTURE_TYPE, PasterDreamMod.MOD_ID);
 

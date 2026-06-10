@@ -158,7 +158,10 @@ public final class ParticleAPI {
      * 缓存粒子注册结果（内部使用）
      *
      * @param result 粒子注册结果
+     * @deprecated 此方法仅为向后兼容保留，用于同步旧式直接注册的粒子到 API 缓存，
+     *             将在下个主版本移除。新粒子请使用 {@link #createParticle(String)}.build()。
      */
+    @Deprecated(forRemoval = true, since = "0.0.3.2")
     public static void cacheParticle(ParticleResult result) {
         REGISTERED_PARTICLES.put(result.name(), result);
         int total = REGISTERED_PARTICLES.size();

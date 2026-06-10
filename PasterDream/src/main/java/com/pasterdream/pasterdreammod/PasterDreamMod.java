@@ -28,6 +28,8 @@ import com.pasterdream.pasterdreammod.registry.PDSounds;
 import com.pasterdream.pasterdreammod.registry.PDStructures;
 import com.pasterdream.pasterdreammod.worldgen.decor.DecorationRegistry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -35,6 +37,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +87,11 @@ public class PasterDreamMod {
         // 注册创造模式物品栏
         PDCreativeTabs.TABS.register(modEventBus);
 
-        // 注册状态效果（BUFF/DEBUFF）—— 同时支持旧版 PDEffects 和新版 MobEffectAPI
-        PDEffects.MOB_EFFECTS.register(modEventBus);
+        // 注册状态效果（BUFF/DEBUFF）
+        // TODO: 过渡期双重注册 —— 下个主版本移除 PDEffects.MOB_EFFECTS，仅保留 MobEffectAPI.REGISTRY
+        @SuppressWarnings("deprecation")
+        DeferredRegister<MobEffect> _legacyEffects = PDEffects.MOB_EFFECTS;
+        _legacyEffects.register(modEventBus);
         MobEffectAPI.REGISTRY.register(modEventBus);
 
         // 注册药水（可酿造）
@@ -99,10 +105,11 @@ public class PasterDreamMod {
 
         // 染梦维度的注册由 data/pasterdream/dimension/dyedream_world.json 数据驱动
 
-        // 注册结构类型（旧方式：手动 DeferredRegister）
-        PDStructures.STRUCTURE_TYPES.register(modEventBus);
-
-        // 注册结构类型（新方式：RuinAPI 自动管理）
+        // 注册结构类型
+        // TODO: 过渡期双重注册 —— 下个主版本移除 PDStructures.STRUCTURE_TYPES，仅保留 RuinAPI.REGISTRY
+        @SuppressWarnings("deprecation")
+        DeferredRegister<StructureType<?>> _legacyStructures = PDStructures.STRUCTURE_TYPES;
+        _legacyStructures.register(modEventBus);
         RuinAPI.REGISTRY.register(modEventBus);
 
         // 注册染梦遗迹结构（染梦列车、巨型染梦树、粉红菇屋等）

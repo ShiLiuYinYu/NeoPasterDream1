@@ -35,7 +35,11 @@ public class PDEffects {
 
     /**
      * 状态效果旧式注册器（向后兼容）
+     *
+     * @deprecated 此独立注册器仅为过渡期兼容保留，将在下个主版本移除。
+     *             请使用 {@link com.pasterdream.pasterdreammod.api.effect.MobEffectAPI#REGISTRY}。
      */
+    @Deprecated(forRemoval = true, since = "0.0.3.2")
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(
             Registries.MOB_EFFECT, PasterDreamMod.MOD_ID);
 

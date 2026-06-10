@@ -53,7 +53,10 @@ public record EntityResult<T extends Entity>(
      * 获取原始的 {@link DeferredHolder}，用于需要 DeferredHolder 引用的场景
      *
      * @return DeferredHolder 实例
+     * @deprecated 此方法仅为向后兼容保留，将在下个主版本移除。
+     *             请直接使用 {@link #entityTypeSupplier()} 获取 Supplier 引用。
      */
+    @Deprecated(forRemoval = true, since = "0.0.3.2")
     @SuppressWarnings("unchecked")
     public DeferredHolder<EntityType<?>, EntityType<T>> deferredHolder() {
         return (DeferredHolder<EntityType<?>, EntityType<T>>) entityTypeSupplier;
